@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import re
 
 import scanner
 import AST
@@ -170,7 +171,13 @@ class MParser:
                       | INTNUM
                       | STRING
         """
-        p[0] = AST.Constant(p[1], p.lineno(1))
+        if re.match(r"\d*\.\d+", str(p[1])):
+            type = 'float'
+        elif re.match(r"\d+", str(p[1])):
+            type = 'int'
+        else:
+            type = 'string'
+        p[0] = AST.Constant(p[1], type, p.lineno(1))
 
 
     def p_variable_expression(self, p):
