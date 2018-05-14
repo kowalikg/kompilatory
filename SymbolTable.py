@@ -1,6 +1,12 @@
 #!/usr/bin/python
 from Exceptions import DuplicationError
+from enum import Enum
 
+class ScopeType(Enum):
+    GLOBAL = 'globalScp'
+    NESTED = 'nestedScp'
+    LOOP = 'loopScp'
+    FUNCTION = 'functionScp'
 
 class Symbol():
     pass
@@ -43,6 +49,11 @@ class SymbolTable(object):
             return symbol
         except:
             return None
+    #
+
+    def getParentScope(self):
+        return self.parent
+
     #
 
     def getGlobal(self, name):
