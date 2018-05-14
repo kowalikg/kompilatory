@@ -12,14 +12,6 @@ class VariableSymbol(Symbol):
         self.type = type
     #
 
-class FunctionSymbol(Symbol):
-
-    def __init__(self, name, type, arguments, table):
-        self.name = name
-        self.type = type
-        self.arguments = arguments
-        self.table = table
-
 class SymbolTable(object):
 
     def __init__(self, parent, name): # parent scope and symbol table name
@@ -29,13 +21,8 @@ class SymbolTable(object):
     #
 
     def put(self, name, symbol): # put variable symbol or fundef under <name> entry
-        if self.symbols[name] is not None:
-            self.symbols[name] = symbol
-        else:
-            raise DuplicationError
-
-        #TODO przemyslec
-    #
+        self.symbols[name] = symbol
+        print(self.symbols[name].type)
 
     def get(self, name): # get variable symbol or fundef from <name> entry
         try:

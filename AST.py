@@ -1,7 +1,6 @@
 class Node(object):
     pass
 
-
 class Expression(Node):
     pass
 
