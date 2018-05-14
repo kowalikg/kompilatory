@@ -26,7 +26,6 @@ class BreakInstruction(Node):
         self.line = line
 
 
-
 class ContinueInstruction(Node):
     def __init__(self, line):
         self.line = line
@@ -130,8 +129,9 @@ class CompoundInstruction(Node):
 
 
 class Constant(Expression):
-    def __init__(self, value, line):
+    def __init__(self, value, type, line):
         self.value = value
+        self.type = type
         self.line = line
 
 
