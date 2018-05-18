@@ -60,6 +60,13 @@ class TypeChecker(NodeVisitor):
             print("Error in line: " + str(node.line) + ": invalid unary negation type: " + type)
         return type
 
+    def visit_TransUnaryExpression(self, node):
+        t = self.visit(node.expression)
+        type = result_types['\''][t.__class__.__name__]
+        if not type:
+            print("Error in line: " + str(node.line) + ": invalid transposition type: " + t)
+        return type
+
     def visit_Variable(self, node):
         definition = self.symbol_table.getGlobal(node.name)
         if definition is None:
