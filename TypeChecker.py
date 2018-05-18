@@ -53,6 +53,13 @@ class TypeChecker(NodeVisitor):
             print("Error in line: " + str(node.line) + ": illegal operation")
         return expected_type
 
+    def visit_NegUnaryExpression(self, node):
+        type = self.visit(node.expression)
+        type = result_types['-'][type]
+        if not type:
+            print("Error in line: " + str(node.line) + ": invalid unary negation type: " + type)
+        return type
+
     def visit_Variable(self, node):
         definition = self.symbol_table.getGlobal(node.name)
         if definition is None:
