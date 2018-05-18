@@ -76,11 +76,20 @@ class TypeChecker(NodeVisitor):
     def visit_Constant(self, node):
         return node.type
 
+    def visit_CompoundInstruction(self, node):
+        self.visit(node.instructions)
+
     def visit_Assignment(self, node):
         type = self.visit(node.expression)
         var = self.symbol_table.getGlobal(node.variable.name)
         if var is not None:
-            print("reassigning variable: " + str(var) + "with type: " + str(type))
+            print("reassigning variable: " + str(var) + " with type: " + str(type))
+
+        self.symbol_table.put(node.variable.name, type)
+        self.visit(node.variable)
+
+    def visit_CompoundAssignment(self, node):
+        # TODO: implement
 
         self.symbol_table.put(node.variable.name, type)
         self.visit(node.variable)
@@ -130,6 +139,7 @@ class TypeChecker(NodeVisitor):
         self.visit(node.expressions_list)
 
     def visit_ZerosInitialization(self, node):
+        print('type')
         type = self.visit(node.expression)
         if type != 'int':
             print("Error in line: " + str(node.line) + ": cannot initialize zeros with " + type)
