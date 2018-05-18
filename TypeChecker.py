@@ -14,6 +14,7 @@ class NodeVisitor(object):
         return visitor(node)
 
 
+
     def generic_visit(self, node):        # Called if no explicit visitor function exists for a node.
         if isinstance(node, list):
             for elem in node:
@@ -30,6 +31,7 @@ class NodeVisitor(object):
 class TypeChecker(NodeVisitor):
     def __init__(self):
         self.symbol_table = SymbolTable(None, "global")
+        self.current_scope = self.symbol_table
         self.loop_nest = 0
         self.function = False
         self.curr_type = ""
@@ -78,11 +80,19 @@ class TypeChecker(NodeVisitor):
         #     self.visit(node.variable.variable)
 
     def visit_MatrixElement(self, node):
-        id = node.variable
-        row = node.row
-        column = node.column
 
-        # TODO: visitMatrixElement i sprawdzić czy nie trzeba poprawić visit_ListOfExpression w związku z tym
+        x = self.visit(node.row)
+        y = self.visit(node.column)
+
+        if x == 'int' and y == 'int':
+            id = node.variable
+            row = node.row
+            column = node.column
+            t = self.current_scope.get(id)
+            if row.value >= t.type.dim_Y or column.value >= t.type.dim_X:
+                print("Error in line: " + str(node.line) + ": index out of bound")
+        else: print("Error in line: " + str(node.line) + ": index is not int")
+
 
     def visit_ListsOfExpressions(self, node):
         size = -1
