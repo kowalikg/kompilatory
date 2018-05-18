@@ -31,7 +31,6 @@ class NodeVisitor(object):
 class TypeChecker(NodeVisitor):
     def __init__(self):
         self.symbol_table = SymbolTable(None, "global")
-        self.current_scope = self.symbol_table
         self.loop_nest = 0
         self.function = False
         self.curr_type = ""
@@ -72,7 +71,7 @@ class TypeChecker(NodeVisitor):
         if definition is None:
             print("Error in line: " + str(node.line) + ": unknown variable")
         else:
-            return definition.type
+            return definition
 
     def visit_Constant(self, node):
         return node.type
@@ -83,15 +82,8 @@ class TypeChecker(NodeVisitor):
         if var is not None:
             print("reassigning variable: " + str(var) + "with type: " + str(type))
 
-        self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, type))
+        self.symbol_table.put(node.variable.name, type)
         self.visit(node.variable)
-        # type1 = self.visit(node.expression)
-        # if (isinstance(node.variable, AST.Variable)):
-        #     self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, type1))
-        #     self.visit(node.variable)
-        # else:
-        #     self.symbol_table.put(node.variable.variable, VariableSymbol(node.variable.variable, type1))
-        #     self.visit(node.variable.variable)
 
     def visit_MatrixElement(self, node):
 
@@ -102,11 +94,10 @@ class TypeChecker(NodeVisitor):
             id = node.variable
             row = node.row
             column = node.column
-            t = self.current_scope.get(id)
-            if row.value >= t.type.dim_Y or column.value >= t.type.dim_X:
+            t = self.symbol_table.getGlobal(id)
+            if row.value >= t.dim_Y or column.value >= t.dim_X:
                 print("Error in line: " + str(node.line) + ": index out of bound")
         else: print("Error in line: " + str(node.line) + ": index is not int")
-
 
     def visit_ListsOfExpressions(self, node):
         size = -1
@@ -159,6 +150,7 @@ class TypeChecker(NodeVisitor):
         dim = self.get_dim(node.expression)
         return M(dim, dim)
 
+
     def visit_BreakInstruction(self, node):
         if self.loop_nest <= 0:
             print("Error in line: " + str(node.line) + ": break outside the loop")
@@ -167,25 +159,50 @@ class TypeChecker(NodeVisitor):
     def visit_ContinueInstruction(self, node):
         if self.loop_nest <= 0:
             print("Error in line: " + str(node.line) + ": continue outside the loop")
+        return None
 
     def visit_IfInstruction(self, node):
-        inner_scope = SymbolTable("if", self.symbol_table)
-        self.symbol_table = inner_scope
-
         self.visit(node.condition)
+        inner_scope = SymbolTable(self.symbol_table, "if")
+        self.symbol_table = inner_scope
         self.visit(node.instruction)
-
-        self.symbol_table = self.symbol_table.parent
+        self.symbol_table = self.symbol_table.getParentScope()
 
     def visit_IfElseInstruction(self, node):
-        inner_scope = SymbolTable("ifelse", self.symbol_table)
+        self.visit(node.condition)
+        inner_scope = SymbolTable(self.symbol_table, "if")
         self.symbol_table = inner_scope
+        self.visit(node.instruction)
+        self.symbol_table = self.symbol_table.getParentScope()
+        inner_scope = SymbolTable(self.symbol_table, "else")
+        self.symbol_table = inner_scope
+        self.visit(node.else_instruction)
+        self.symbol_table = self.symbol_table.getParentScope()
+        return None
 
+    def visit_WhileInstruction(self, node):
+        inner_scope = SymbolTable(self.symbol_table, 'while')
+        self.symbol_table = inner_scope
         self.visit(node.condition)
         self.visit(node.instruction)
-        self.visit(node.else_instruction)
+        self.symbol_table = self.symbol_table.getParentScope()
+        return None
 
-        self.symbol_table = self.symbol_table.parent
+    def visit_ForInstruction(self, node):
+        inner_scope = SymbolTable(self.symbol_table, 'while')
+        self.symbol_table = inner_scope
+
+        type = self.visit(node.start)
+        if type != 'int':
+            print("Error in line: " + str(node.line) + ": invalid range type: " + str(type))
+        type = self.visit(node.end)
+        if type != 'int':
+            print("Error in line: " + str(node.line) + ": invalid range type: " + str(type))
+
+        self.symbol_table.put(node.variable.name, type)
+        self.visit(node.instruction)
+        self.symbol_table = self.symbol_table.getParentScope()
+        return None
 
     def visit_ReturnInstruction(self, node):
         if (function):

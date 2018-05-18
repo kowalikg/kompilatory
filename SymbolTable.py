@@ -28,14 +28,7 @@ class SymbolTable(object):
 
     def put(self, name, symbol): # put variable symbol or fundef under <name> entry
         self.symbols[name] = symbol
-        print(self.symbols[name].type)
 
-    def get(self, name): # get variable symbol or fundef from <name> entry
-        try:
-            symbol = self.symbols[name]
-            return symbol
-        except:
-            return None
     #
 
     def getParentScope(self):
@@ -44,13 +37,12 @@ class SymbolTable(object):
     #
 
     def getGlobal(self, name):
-        symbol = self.get(name)
-        if symbol is None:
-            if self.parent is not None:
-                return self.parent.getGlobal(name)
-            else:
-                return None
-        else:
+        try:
+            symbol = self.symbols[name]
             return symbol
+        except:
+            if self.parent is not None:
+                return self.getParentScope().getGlobal(name)
+            return None
 
 

@@ -89,14 +89,14 @@ class CompoundAssignment(Node):
         self.expression = expression
         self.line = line
 
-
+#DONE
 class IfInstruction(Node):
     def __init__(self, condition, instruction, line):
         self.condition = condition
         self.instruction = instruction
         self.line = line
 
-
+#DONE
 class IfElseInstruction(Node):
     def __init__(self, condition, instruction, else_instruction, line):
         self.condition = condition
