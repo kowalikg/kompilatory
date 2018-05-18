@@ -205,10 +205,10 @@ class TypeChecker(NodeVisitor):
         return None
 
     def visit_ReturnInstruction(self, node):
-        if (function):
-            self.visit(node.expression)
-        else:
-            print("Error in line: " + str(node.line) + ": return outside the function")
+        self.visit(node.expression)
+        if self.symbol_table.getParentScope() is None:
+            print("Error in line: " + str(node.line) + ": return in outer of scope")
+        return None
 
     def get_dim(self, val):
         if isinstance(val, Constant):

@@ -104,14 +104,14 @@ class IfElseInstruction(Node):
         self.else_instruction = else_instruction
         self.line = line
 
-
+#DONE
 class WhileInstruction(Node):
     def __init__(self, condition, instruction, line):
         self.condition = condition
         self.instruction = instruction
         self.line = line
 
-
+#DONE
 class ForInstruction(Node):
     def __init__(self, variable, start, end, instruction, line):
         self.variable = variable
