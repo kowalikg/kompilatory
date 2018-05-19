@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import AST
-from OperationsTypes import result_types, Matrix as M
+from OperationsTypes import result_types, Matrix as M, getMatrixResult
 from SymbolTable import SymbolTable, VariableSymbol
 
 from AST import *
@@ -83,7 +83,8 @@ class TypeChecker(NodeVisitor):
         type = self.visit(node.expression)
         var = self.symbol_table.getGlobal(node.variable.name)
         if var is not None:
-            print("reassigning variable: " + str(var) + " with type: " + str(type))
+            print("Warning: in line " + str(node.line) + " was previously declared variable, now reassigning with type: " + str(
+                type))
 
         self.symbol_table.put(node.variable.name, type)
         self.visit(node.variable)
@@ -92,7 +93,9 @@ class TypeChecker(NodeVisitor):
         # TODO: implement
 
         self.symbol_table.put(node.variable.name, type)
+
         self.visit(node.variable)
+
 
     def visit_MatrixElement(self, node):
 
@@ -121,7 +124,9 @@ class TypeChecker(NodeVisitor):
     def visit_MatrixAssignment(self, node):
         var = self.symbol_table.getGlobal(node.variable.name)
         if var is not None:
-            print("reassigning variable: " + str(var) + "with type: " + str(M.__name__))
+            print("Warning: in line " + str(
+                node.line) + " was previously declared variable, now reassigning with type: " + str(
+                M.__name__))
 
         self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, M.__name__))
         self.visit(node.expression_list)
@@ -139,7 +144,7 @@ class TypeChecker(NodeVisitor):
         self.visit(node.expressions_list)
 
     def visit_ZerosInitialization(self, node):
-        print('type')
+        #print('type')
         type = self.visit(node.expression)
         if type != 'int':
             print("Error in line: " + str(node.line) + ": cannot initialize zeros with " + type)
@@ -191,15 +196,18 @@ class TypeChecker(NodeVisitor):
         return None
 
     def visit_WhileInstruction(self, node):
-        inner_scope = SymbolTable(self.symbol_table, 'while')
+        self.loop_nest = self.loop_nest + 1
+        inner_scope = SymbolTable(self.symbol_table, 'while' + str(self.loop_nest))
         self.symbol_table = inner_scope
         self.visit(node.condition)
         self.visit(node.instruction)
         self.symbol_table = self.symbol_table.getParentScope()
+        self.loop_nest = self.loop_nest - 1
         return None
 
     def visit_ForInstruction(self, node):
-        inner_scope = SymbolTable(self.symbol_table, 'while')
+        self.loop_nest = self.loop_nest + 1
+        inner_scope = SymbolTable(self.symbol_table, 'for' + str(self.loop_nest))
         self.symbol_table = inner_scope
 
         type = self.visit(node.start)
@@ -212,6 +220,7 @@ class TypeChecker(NodeVisitor):
         self.symbol_table.put(node.variable.name, type)
         self.visit(node.instruction)
         self.symbol_table = self.symbol_table.getParentScope()
+        self.loop_nest = self.loop_nest - 1
         return None
 
     def visit_ReturnInstruction(self, node):

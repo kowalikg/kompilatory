@@ -22,10 +22,10 @@ for op in ['.+', '.-', '.*', './']:
     result_types[op][Matrix.__name__]['float'] = Matrix.__name__
 
 
-for op in ['+', '-', '*', '/', '<', '>', '<=', '>=', '==', '!=']:
+for op in ['+', '-', '*', '/',  '+=', '-=', '*=', '/=', '<', '>', '<=', '>=', '==', '!=']:
     result_types[op]['int']['int'] = 'int'
 
-for op in ['+', '-', '*', '/']:
+for op in ['+', '-', '*', '/', '+=', '-=', '*=', '/=']:
     result_types[op]['int']['float'] = 'float'
     result_types[op]['float']['int'] = 'float'
     result_types[op]['float']['float'] = 'float'

@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser = Mparser.MParser(scanner)
     parser = yacc.yacc(module=parser)
     program = parser.parse(text, lexer=scanner.lexer)
-    print(program.printTree())
+    #print(program.printTree())
     typeChecker = TypeChecker()
     typeChecker.visit(program)  # or alternatively ast.accept(typeChecker)
 
