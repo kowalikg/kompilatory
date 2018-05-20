@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import AST
-from OperationsTypes import result_types, Matrix as M, getMatrixResult
+from OperationsTypes import result_types, Matrix as M, getMatrixResult, Matrix
 from SymbolTable import SymbolTable, VariableSymbol
 
 from AST import *
@@ -81,20 +81,32 @@ class TypeChecker(NodeVisitor):
 
     def visit_Assignment(self, node):
         type = self.visit(node.expression)
-        var = self.symbol_table.getGlobal(node.variable.name)
-        if var is not None:
-            print("Warning: in line " + str(node.line) + " was previously declared variable, now reassigning with type: " + str(
+        if isinstance(node.variable, MatrixElement):
+            var = self.symbol_table.getGlobal(node.variable.variable)
+            if var is None:
+                print("Error in line " + str(node.line) + ":no matrix with this name")
+
+        else:
+            var = self.symbol_table.getGlobal(node.variable.name)
+            if var is not None:
+                print("Warning: in line " + str(node.line) + " was previously declared variable, now reassigning with type: " + str(
                 type))
 
-        self.symbol_table.put(node.variable.name, type)
+            self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, type))
+
         self.visit(node.variable)
 
     def visit_CompoundAssignment(self, node):
         # TODO: implement
+        variable = self.symbol_table.getGlobal(node.variable.name)
+        expression = self.visit(node.expression)
+        operator = node.operator
 
-        self.symbol_table.put(node.variable.name, type)
-
-        self.visit(node.variable)
+        if str(variable.type) != 'Matrix':
+            expected_type = result_types[operator][variable.type][expression.type]
+            if not expected_type:
+                print("Error in line: " + str(node.line) + ": illegal operation")
+            return expected_type
 
 
     def visit_MatrixElement(self, node):
@@ -107,6 +119,7 @@ class TypeChecker(NodeVisitor):
             row = node.row
             column = node.column
             t = self.symbol_table.getGlobal(id)
+            print(t)
             if row.value >= t.dim_Y or column.value >= t.dim_X:
                 print("Error in line: " + str(node.line) + ": index out of bound")
         else: print("Error in line: " + str(node.line) + ": index is not int")
@@ -129,6 +142,7 @@ class TypeChecker(NodeVisitor):
                 M.__name__))
 
         self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, M.__name__))
+
         self.visit(node.expression_list)
 
     def visit_PrintExpression(self, node):

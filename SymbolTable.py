@@ -17,6 +17,8 @@ class VariableSymbol(Symbol):
         self.name = name
         self.type = type
     #
+    def __str__(self):
+        return self.name + ":" + self.type
 
 class SymbolTable(object):
 
@@ -28,6 +30,7 @@ class SymbolTable(object):
 
     def put(self, name, symbol): # put variable symbol or fundef under <name> entry
         self.symbols[name] = symbol
+        #print(str(self.symbols[name]))
 
     #
 
