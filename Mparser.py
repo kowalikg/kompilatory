@@ -122,17 +122,17 @@ class MParser:
 
     def p_matrix_initialization_zeros(self, p):
         """expression : ZEROS '(' expression ')'"""
-        p[0] = AST.ZerosInitialization(p[3], p.lineno(1))
+        p[0] = AST.ZerosInitialization(p[3], p.lineno(3))
 
 
     def p_matrix_initialization_ones(self, p):
         """expression : ONES '(' expression ')'"""
-        p[0] = AST.OnesInitialization(p[3], p.lineno(1))
+        p[0] = AST.OnesInitialization(p[3], p.lineno(3))
 
 
     def p_matrix_initialization_eye(self, p):
         """expression : EYE '(' expression ')'"""
-        p[0] = AST.EyeInitialization(p[3], p.lineno(1))
+        p[0] = AST.EyeInitialization(p[3], p.lineno(3))
 
 
     def p_compound_assignment(self, p):
@@ -147,17 +147,17 @@ class MParser:
         """if_instruction : IF '(' condition ')' instruction %prec IF
                           | IF '(' condition ')' instruction ELSE instruction"""
         if len(p) == 8:
-            p[0] = AST.IfElseInstruction(p[3], p[5], p[7], p.lineno(1))
+            p[0] = AST.IfElseInstruction(p[3], p[5], p[7], p.lineno(2))
         else:
-            p[0] = AST.IfInstruction(p[3], p[5], p.lineno(1))
+            p[0] = AST.IfInstruction(p[3], p[5], p.lineno(2))
 
     def p_while_instruction(self, p):
         """while_instruction : WHILE '(' condition ')' instruction"""
-        p[0] = AST.WhileInstruction(p[3], p[5], p.lineno(1))
+        p[0] = AST.WhileInstruction(p[3], p[5], p.lineno(3))
 
     def p_for_instruction(self, p):
         """for_instruction : FOR variable_expression '=' expression ':' expression  instruction """
-        p[0] = AST.ForInstruction(p[2], p[4], p[6], p[7], p.lineno(1))
+        p[0] = AST.ForInstruction(p[2], p[4], p[6], p[7], p.lineno(2))
 
     def p_compound_instruction(self, p):
         """compound_instruction : '{' instructions '}' """
@@ -200,10 +200,12 @@ class MParser:
     def p_expression_lists(self, p):
         """expression_lists : expression_lists ';' expression_list
                             | expression_list """
-        p[0] = AST.ListsOfExpressions(p.lineno(1))
+
         if len(p) == 4:
+            p[0] = AST.ListsOfExpressions(p.lineno(2))
             p[0].flat_expressions(p[1].expression_lists, p[3])
         else:
+            p[0] = AST.ListsOfExpressions(p.lineno(1))
             p[0].append_expression(p[1])
 
     def p_expression_list(self, p):
