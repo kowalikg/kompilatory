@@ -123,7 +123,6 @@ class TypeChecker(NodeVisitor):
             self.visit(node.variable)
 
     def visit_CompoundAssignment(self, node):
-
         variable = self.symbol_table.getGlobal(node.variable.name)
         expression = self.visit(node.expression)
         operator = node.operator
