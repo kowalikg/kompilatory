@@ -89,7 +89,6 @@ class Scanner:
 
 # numerowanie linii
 
-
     def t_newline(self, t):
         r'\n+'
         t.lexer.lineno += len(t.value)

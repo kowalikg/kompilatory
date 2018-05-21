@@ -42,15 +42,38 @@ class TypeChecker(NodeVisitor):
         for instruction in node.instructions:
             self.visit(instruction)
 
+
     def visit_BinaryExpression(self, node):
         type_left = self.visit(node.expression_left)
         type_right = self.visit(node.expression_right)
+
         operator = node.operator
 
-        expected_type = result_types[operator][type_left][type_right]
-        if not expected_type:
-            print("Error in line: " + str(node.line) + ": illegal operation")
-        return expected_type
+        if not isinstance(type_left, Matrix):
+            if isinstance(type_left, VariableSymbol):
+                if isinstance(type_right, VariableSymbol):
+                    expected_type = result_types[operator][type_left.type][type_right.type]
+                else:
+                    expected_type = result_types[operator][type_left.type][type_right]
+            else:
+                if isinstance(type_right, VariableSymbol):
+                    expected_type = result_types[operator][type_left][type_right.type]
+                else:
+                    expected_type = result_types[operator][type_left][type_right]
+
+            if not expected_type:
+                print("Error in line: " + str(node.line) + ": illegal operation")
+                return None
+            return expected_type
+        else:
+            matrix_left = self.symbol_table.getGlobal(type_left.name)
+            print(matrix_left)
+            if not isinstance(type_right, Matrix):
+                print("Error in line: " + str(node.line) + ": illegal operation")
+            else:
+                if type_right.dim_X != matrix_left.dim_X or type_right.dim_Y != matrix_left.dim_Y:
+                    print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                return M(type_right.dim_X, type_right.dim_Y)
 
     def visit_NegUnaryExpression(self, node):
         type = self.visit(node.expression)
@@ -81,10 +104,14 @@ class TypeChecker(NodeVisitor):
 
     def visit_Assignment(self, node):
         type = self.visit(node.expression)
+
         if isinstance(node.variable, MatrixElement):
             var = self.symbol_table.getGlobal(node.variable.variable)
             if var is None:
-                print("Error in line " + str(node.line) + ":no matrix with this name")
+                print("Error in line " + str(
+                    node.line) + ": no matrix with that name")
+            else:
+                self.visit(node.variable)
 
         else:
             var = self.symbol_table.getGlobal(node.variable.name)
@@ -94,19 +121,29 @@ class TypeChecker(NodeVisitor):
 
             self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, type))
 
-        self.visit(node.variable)
+            self.visit(node.variable)
 
     def visit_CompoundAssignment(self, node):
-        # TODO: implement
+
         variable = self.symbol_table.getGlobal(node.variable.name)
         expression = self.visit(node.expression)
         operator = node.operator
-
-        if str(variable.type) != 'Matrix':
+        if not isinstance(variable, Matrix):
             expected_type = result_types[operator][variable.type][expression.type]
             if not expected_type:
                 print("Error in line: " + str(node.line) + ": illegal operation")
+                return None
             return expected_type
+        else:
+            matrix_left = self.symbol_table.getGlobal(node.variable.name)
+            if not isinstance(expression, Matrix):
+                print("Error in line: " + str(node.line) + ": illegal operation")
+                return None
+            else:
+                if expression.dim_X != matrix_left.dim_X or expression.dim_Y != matrix_left.dim_Y:
+                    print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                    return None
+                return M(matrix_left.dim_X, matrix_left.dim_Y)
 
 
     def visit_MatrixElement(self, node):
@@ -115,11 +152,12 @@ class TypeChecker(NodeVisitor):
         y = self.visit(node.column)
 
         if x == 'int' and y == 'int':
+            print(node.variable)
             id = node.variable
             row = node.row
             column = node.column
             t = self.symbol_table.getGlobal(id)
-            print(t)
+            print(type(t))
             if row.value >= t.dim_Y or column.value >= t.dim_X:
                 print("Error in line: " + str(node.line) + ": index out of bound")
         else: print("Error in line: " + str(node.line) + ": index is not int")
@@ -140,8 +178,9 @@ class TypeChecker(NodeVisitor):
             print("Warning: in line " + str(
                 node.line) + " was previously declared variable, now reassigning with type: " + str(
                 M.__name__))
-
-        self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, M.__name__))
+        matrix = self.visit(node.expression_list)
+        matrix.set_name(node.variable.name)
+        self.symbol_table.put(node.variable.name, matrix)
 
         self.visit(node.expression_list)
 
@@ -159,9 +198,11 @@ class TypeChecker(NodeVisitor):
 
     def visit_ZerosInitialization(self, node):
         #print('type')
+
         type = self.visit(node.expression)
         if type != 'int':
             print("Error in line: " + str(node.line) + ": cannot initialize zeros with " + type)
+            return None
         dim = self.get_dim(node.expression)
         return M(dim, dim)
 
@@ -169,6 +210,7 @@ class TypeChecker(NodeVisitor):
         type = self.visit(node.expression)
         if type != "int":
             print("Error in line: " + str(node.line) + ": cannot initialize ones with " + type)
+            return None
         dim = self.get_dim(node.expression)
         return M(dim, dim)
 
@@ -176,6 +218,7 @@ class TypeChecker(NodeVisitor):
         type = self.visit(node.expression)
         if type != 'int':
             print("Error in line: " + str(node.line) + ": cannot initialize eye with " + type)
+            return None
         dim = self.get_dim(node.expression)
         return M(dim, dim)
 

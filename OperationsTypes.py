@@ -8,6 +8,9 @@ class Matrix(object):
         self.dim_X = dim_X
         self.dim_Y = dim_Y
 
+    def set_name(self, name):
+        self.name = name
+
 
 def getMatrixResult(x, y):
     print(Matrix)
