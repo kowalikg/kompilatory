@@ -84,11 +84,11 @@ class MParser:
 
     def p_assignment_instruction(self, p):
         """assignment_instruction : variable_expression '=' expression ';' """
-        p[0] = AST.Assignment(p[1], p[3], p.lineno(1))
+        p[0] = AST.Assignment(p[1], p[3], p.lineno(2))
 
     def p_matrix_assignment(self, p):
         """assignment_instruction : variable_expression '=' '[' expression_lists ']' ';'"""
-        p[0] = AST.MatrixAssignment(p[1], p[4], p.lineno(1))
+        p[0] = AST.MatrixAssignment(p[1], p[4], p.lineno(2))
 
     def p_binary_expression(self, p):
         """expression : expression '+' expression
@@ -108,7 +108,7 @@ class MParser:
 
         """
 
-        p[0] = AST.BinaryExpression(p[1], p[2], p[3], p.lineno(1))
+        p[0] = AST.BinaryExpression(p[1], p[2], p[3], p.lineno(2))
 
     def p_neg_unary_expression(self, p):
         """expression : '-' expression %prec NEGATION """
@@ -191,7 +191,7 @@ class MParser:
         if len(p) == 2:
             p[0] = AST.Variable(p[1], p.lineno(1))
         else:
-            p[0] = AST.MatrixElement(p[1], p[3], p[5], p.lineno(1))
+            p[0] = AST.MatrixElement(p[1], p[3], p[5], p.lineno(2))
 
     def p_paren_expression(self, p):
         """expression : '(' expression ')'"""

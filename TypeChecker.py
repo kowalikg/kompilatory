@@ -67,7 +67,6 @@ class TypeChecker(NodeVisitor):
             return expected_type
         else:
             matrix_left = self.symbol_table.getGlobal(type_left.name)
-            print(matrix_left)
             if not isinstance(type_right, Matrix):
                 print("Error in line: " + str(node.line) + ": illegal operation")
             else:
@@ -116,7 +115,7 @@ class TypeChecker(NodeVisitor):
         else:
             var = self.symbol_table.getGlobal(node.variable.name)
             if var is not None:
-                print("Warning: in line " + str(node.line) + " was previously declared variable, now reassigning with type: " + str(
+                print("Warning in line " + str(node.line) + ": previously declared variable, now reassigning with type: " + str(
                 type))
 
             self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, type))
@@ -175,8 +174,8 @@ class TypeChecker(NodeVisitor):
     def visit_MatrixAssignment(self, node):
         var = self.symbol_table.getGlobal(node.variable.name)
         if var is not None:
-            print("Warning: in line " + str(
-                node.line) + " was previously declared variable, now reassigning with type: " + str(
+            print("Warning in line " + str(
+                node.line) + ": previously declared variable, now reassigning with type: " + str(
                 M.__name__))
         matrix = self.visit(node.expression_list)
         matrix.set_name(node.variable.name)
