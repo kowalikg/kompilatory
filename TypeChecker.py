@@ -75,17 +75,20 @@ class TypeChecker(NodeVisitor):
                 return M(type_right.dim_X, type_right.dim_Y)
 
     def visit_NegUnaryExpression(self, node):
-        type = self.visit(node.expression)
-        type = result_types['-'][type]
+        t = self.visit(node.expression)
+        if isinstance(t, VariableSymbol):
+            type = result_types['-'][t.type.__class__.__name__]
+        else:
+            type = result_types['-'][t]
         if not type:
-            print("Error in line: " + str(node.line) + ": invalid unary negation type: " + type)
+            print("Error in line: " + str(node.line) + ": invalid unary negation type")
         return type
 
     def visit_TransUnaryExpression(self, node):
         t = self.visit(node.expression)
-        type = result_types['\''][t.__class__.__name__]
+        type = result_types['\''][t.type.__class__.__name__]
         if not type:
-            print("Error in line: " + str(node.line) + ": invalid transposition type: " + t)
+            print("Error in line: " + str(node.line) + ": invalid transposition type")
         return type
 
     def visit_Variable(self, node):
@@ -150,12 +153,10 @@ class TypeChecker(NodeVisitor):
         y = self.visit(node.column)
 
         if x == 'int' and y == 'int':
-            print(node.variable)
             id = node.variable
             row = node.row
             column = node.column
             t = self.symbol_table.getGlobal(id)
-            print(type(t))
             if row.value >= t.dim_Y or column.value >= t.dim_X:
                 print("Error in line: " + str(node.line) + ": index out of bound")
         else: print("Error in line: " + str(node.line) + ": index is not int")

@@ -117,22 +117,22 @@ class MParser:
 
     def p_trans_unary_expression(self, p):
         """expression : expression "'" """
-        p[0] = AST.TransUnaryExpression(p[1], p.lineno(1))
+        p[0] = AST.TransUnaryExpression(p[1], p.lineno(2))
 
 
     def p_matrix_initialization_zeros(self, p):
         """expression : ZEROS '(' expression ')'"""
-        p[0] = AST.ZerosInitialization(p[3], p.lineno(3))
+        p[0] = AST.ZerosInitialization(p[3], p.lineno(1))
 
 
     def p_matrix_initialization_ones(self, p):
         """expression : ONES '(' expression ')'"""
-        p[0] = AST.OnesInitialization(p[3], p.lineno(3))
+        p[0] = AST.OnesInitialization(p[3], p.lineno(1))
 
 
     def p_matrix_initialization_eye(self, p):
         """expression : EYE '(' expression ')'"""
-        p[0] = AST.EyeInitialization(p[3], p.lineno(3))
+        p[0] = AST.EyeInitialization(p[3], p.lineno(1))
 
 
     def p_compound_assignment(self, p):
