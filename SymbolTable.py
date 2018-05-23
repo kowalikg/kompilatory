@@ -15,10 +15,6 @@ class VariableSymbol(Symbol):
         return str(self.type)
 
 
-class ConstantSymbol(Symbol):
-    def __init__(self, type):
-        self.type = type
-
 class SymbolTable(object):
 
     def __init__(self, parent, name): # parent scope and symbol table name
