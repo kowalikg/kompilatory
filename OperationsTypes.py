@@ -1,22 +1,9 @@
 from collections import defaultdict
 
+from SymbolTable import Matrix
+
 result_types = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: None)))
 
-
-class Matrix(object):
-    def __init__(self, dim_X, dim_Y):
-        self.dim_X = dim_X
-        self.dim_Y = dim_Y
-
-    def set_name(self, name):
-        self.name = name
-
-    def __str__(self):
-        return "Matrix"
-
-class BadType(object):
-    def __str__(self):
-        return "bad type"
 
 
 for op in ['.+', '.-', '.*', './']:

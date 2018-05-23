@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import AST
-from OperationsTypes import result_types, Matrix as M, Matrix, BadType
-from SymbolTable import SymbolTable, VariableSymbol
+from OperationsTypes import result_types
+from SymbolTable import SymbolTable, VariableSymbol, Matrix, BadType
 
 from AST import *
 
@@ -12,8 +12,6 @@ class NodeVisitor(object):
         method = 'visit_' + node.__class__.__name__
         visitor = getattr(self, method, self.generic_visit)
         return visitor(node)
-
-
 
     def generic_visit(self, node):        # Called if no explicit visitor function exists for a node.
         if isinstance(node, list):
@@ -74,12 +72,12 @@ class TypeChecker(NodeVisitor):
                                 print(
                                     "Error in line: " + str(node.line) + ": illegal operation on different matrix size")
                                 return BadType()
-                            return M(type_left.type.dim_X, type_right.dim_Y)
+                            return Matrix(type_left.type.dim_X, type_right.dim_Y)
                         else:
                             if type_left.type.dim_X != type_right.type.dim_X or type_left.type.dim_Y != type_right.type.dim_Y:
                                 print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
                                 return BadType()
-                            return M(type_left.type.dim_X, type_right.type.dim_Y)
+                            return Matrix(type_left.type.dim_X, type_right.type.dim_Y)
 
         elif isinstance(type_left, Matrix):
             if isinstance(type_right, VariableSymbol):
@@ -90,12 +88,12 @@ class TypeChecker(NodeVisitor):
                     if type_left.dim_X != type_right.type.dim_X or type_left.dim_Y != type_right.type.dim_Y:
                         print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
                         return BadType()
-                    return M(type_left.dim_X, type_right.type.dim_Y)
+                    return Matrix(type_left.dim_X, type_right.type.dim_Y)
             elif isinstance(type_right, Matrix):
                 if type_left.dim_X != type_right.dim_X or type_left.dim_Y != type_right.dim_Y:
                     print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
                     return BadType()
-                return M(type_left.dim_X, type_right.dim_Y)
+                return Matrix(type_left.dim_X, type_right.dim_Y)
             else:
                 print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
                 return BadType()
@@ -186,7 +184,7 @@ class TypeChecker(NodeVisitor):
                 if expression.type.dim_X != matrix_left.type.dim_X or expression.type.dim_Y != matrix_left.type.dim_Y:
                     print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
                     return BadType()
-                return M(matrix_left.dim_X, matrix_left.dim_Y)
+                return Matrix(matrix_left.dim_X, matrix_left.dim_Y)
 
 
     def visit_MatrixElement(self, node):
@@ -220,14 +218,14 @@ class TypeChecker(NodeVisitor):
             if size != next_size:
                 print("Error in line: " + str(node.line) + ": Different rows size " + str(size) + " and " + str(next_size))
                 return BadType()
-        return M(size, len(node.expression_lists))
+        return Matrix(size, len(node.expression_lists))
 
     def visit_MatrixAssignment(self, node):
         var = self.symbol_table.get(node.variable.name)
         if var is not None:
             print("Warning in line " + str(
                 node.line) + ": previously declared variable, now reassigning with type: " + str(
-                M.__name__))
+                Matrix.__name__))
         matrix = self.visit(node.expression_list)
         self.symbol_table.put(node.variable.name, matrix)
 
@@ -252,13 +250,13 @@ class TypeChecker(NodeVisitor):
                 print("Error in line: " + str(node.line) + ": cannot initialize zeros with " + variable_type)
                 return BadType()
             dim = self.get_dim(node.expression)
-            return M(dim, dim)
+            return Matrix(dim, dim)
         else:
             if type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize zeros with this expression")
                 return BadType()
             dim = self.get_dim(node.expression)
-            return M(dim, dim)
+            return Matrix(dim, dim)
 
     def visit_OnesInitialization(self, node):
         type = self.visit(node.expression)
@@ -268,13 +266,13 @@ class TypeChecker(NodeVisitor):
                 print("Error in line: " + str(node.line) + ": cannot initialize ones with " + variable_type)
                 return BadType()
             dim = self.get_dim(node.expression)
-            return M(dim, dim)
+            return Matrix(dim, dim)
         else:
             if type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize ones with this expression")
                 return BadType()
             dim = self.get_dim(node.expression)
-            return M(dim, dim)
+            return Matrix(dim, dim)
 
     def visit_EyeInitialization(self, node):
         type = self.visit(node.expression)
@@ -284,13 +282,13 @@ class TypeChecker(NodeVisitor):
                 print("Error in line: " + str(node.line) + ": cannot initialize eye with " + variable_type)
                 return BadType()
             dim = self.get_dim(node.expression)
-            return M(dim, dim)
+            return Matrix(dim, dim)
         else:
             if type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize eye with this expression")
                 return BadType()
             dim = self.get_dim(node.expression)
-            return M(dim, dim)
+            return Matrix(dim, dim)
 
 
     def visit_BreakInstruction(self, node):

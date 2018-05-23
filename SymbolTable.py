@@ -15,6 +15,20 @@ class VariableSymbol(Symbol):
         return str(self.type)
 
 
+class Matrix(object):
+    def __init__(self, dim_X, dim_Y):
+        self.dim_X = dim_X
+        self.dim_Y = dim_Y
+
+    def __str__(self):
+        return "Matrix"
+
+
+class BadType(object):
+    def __str__(self):
+        return "bad type"
+
+
 class SymbolTable(object):
 
     def __init__(self, parent, name): # parent scope and symbol table name
