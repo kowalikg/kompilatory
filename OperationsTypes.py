@@ -11,12 +11,12 @@ class Matrix(object):
     def set_name(self, name):
         self.name = name
 
+    def __str__(self):
+        return "Matrix"
 
-def getMatrixResult(x, y):
-    print(Matrix)
-    if isinstance(x, Matrix) and isinstance(y, Matrix) and x.dim_X == y.dim_X and x.dim_Y == y.dim_Y:
-        return x
-    return None
+class BadType(object):
+    def __str__(self):
+        return "bad type"
 
 
 for op in ['.+', '.-', '.*', './']:

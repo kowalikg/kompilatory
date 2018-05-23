@@ -2,12 +2,6 @@
 from Exceptions import DuplicationError
 from enum import Enum
 
-class ScopeType(Enum):
-    GLOBAL = 'globalScp'
-    NESTED = 'nestedScp'
-    LOOP = 'loopScp'
-    FUNCTION = 'functionScp'
-
 class Symbol():
     pass
 
@@ -18,7 +12,12 @@ class VariableSymbol(Symbol):
         self.type = type
     #
     def __str__(self):
-        return self.name + ":" + self.type
+        return str(self.type)
+
+
+class ConstantSymbol(Symbol):
+    def __init__(self, type):
+        self.type = type
 
 class SymbolTable(object):
 
@@ -26,20 +25,14 @@ class SymbolTable(object):
         self.parent = parent
         self.name = name
         self.symbols = {}
-    #
 
     def put(self, name, symbol): # put variable symbol or fundef under <name> entry
         self.symbols[name] = symbol
-        #print(str(self.symbols[name]))
-
-    #
 
     def getParentScope(self):
         return self.parent
 
-    #
-
-    def getGlobal(self, name):
+    def get(self, name):
         try:
             symbol = self.symbols[name]
             return symbol

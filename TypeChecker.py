@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import AST
-from OperationsTypes import result_types, Matrix as M, getMatrixResult, Matrix
+from OperationsTypes import result_types, Matrix as M, Matrix, BadType
 from SymbolTable import SymbolTable, VariableSymbol
 
 from AST import *
@@ -48,31 +48,32 @@ class TypeChecker(NodeVisitor):
         type_right = self.visit(node.expression_right)
 
         operator = node.operator
-
-        if not isinstance(type_left, Matrix):
-            if isinstance(type_left, VariableSymbol):
+        if isinstance(type_left, VariableSymbol):
+            if isinstance(type_left.type, VariableSymbol):
                 if isinstance(type_right, VariableSymbol):
                     expected_type = result_types[operator][type_left.type][type_right.type]
                 else:
                     expected_type = result_types[operator][type_left.type][type_right]
             else:
-                if isinstance(type_right, VariableSymbol):
+                if isinstance(type_right.type, VariableSymbol):
                     expected_type = result_types[operator][type_left][type_right.type]
                 else:
                     expected_type = result_types[operator][type_left][type_right]
-
             if not expected_type:
-                print("Error in line: " + str(node.line) + ": illegal operation")
-                return None
+                print("Error in line: " + str(node.line) + ": illegal operation "
+                      + str(type_left) + " " + str(operator) + " " + str(type_right))
+                return BadType()
             return expected_type
         else:
-            matrix_left = self.symbol_table.getGlobal(type_left.name)
-            if not isinstance(type_right, Matrix):
-                print("Error in line: " + str(node.line) + ": illegal operation")
-            else:
-                if type_right.dim_X != matrix_left.dim_X or type_right.dim_Y != matrix_left.dim_Y:
-                    print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
-                return M(type_right.dim_X, type_right.dim_Y)
+            if isinstance(type_right, VariableSymbol):
+                if not isinstance(type_right.type, Matrix):
+                    print("Error in line: " + str(node.line) + ": illegal operation "
+                        + str(type_left) + " " + str(operator) + " " + str(type_right))
+                else:
+                    matrix_left = self.symbol_table.get(type_left.name)
+                    if type_right.dim_X != matrix_left.dim_X or type_right.dim_Y != matrix_left.dim_Y:
+                        print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                    return M(type_right.dim_X, type_right.dim_Y)
 
     def visit_NegUnaryExpression(self, node):
         t = self.visit(node.expression)
@@ -92,7 +93,7 @@ class TypeChecker(NodeVisitor):
         return type
 
     def visit_Variable(self, node):
-        definition = self.symbol_table.getGlobal(node.name)
+        definition = self.symbol_table.get(node.name)
         if definition is None:
             print("Error in line: " + str(node.line) + ": unknown variable")
         else:
@@ -108,7 +109,7 @@ class TypeChecker(NodeVisitor):
         type = self.visit(node.expression)
 
         if isinstance(node.variable, MatrixElement):
-            var = self.symbol_table.getGlobal(node.variable.variable)
+            var = self.symbol_table.get(node.variable.variable)
             if var is None:
                 print("Error in line " + str(
                     node.line) + ": no matrix with that name")
@@ -116,29 +117,35 @@ class TypeChecker(NodeVisitor):
                 self.visit(node.variable)
 
         else:
-            var = self.symbol_table.getGlobal(node.variable.name)
+            var = self.symbol_table.get(node.variable.name)
+
             if var is not None:
-                print("Warning in line " + str(node.line) + ": previously declared variable, now reassigning with type: " + str(
-                type))
+                if str(var) != str(type):
+                    print("Warning in line " + str(node.line) +
+                          ": previously declared variable, type: " + str(var) + " now reassigning with type: " + str(type))
 
             self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, type))
 
             self.visit(node.variable)
 
     def visit_CompoundAssignment(self, node):
-        variable = self.symbol_table.getGlobal(node.variable.name)
+        variable = self.symbol_table.get(node.variable.name)
         expression = self.visit(node.expression)
         operator = node.operator
         if not isinstance(variable, Matrix):
             expected_type = result_types[operator][variable.type][expression.type]
             if not expected_type:
-                print("Error in line: " + str(node.line) + ": illegal operation")
+                print("Error in line: " + str(node.line) + ": illegal operation "
+                      + str(variable) + " " + str(operator) + " " + str(expression))
                 return None
             return expected_type
         else:
-            matrix_left = self.symbol_table.getGlobal(node.variable.name)
-            if not isinstance(expression, Matrix):
-                print("Error in line: " + str(node.line) + ": illegal operation")
+            print("BUM")
+            matrix_left = self.symbol_table.get(node.variable.name)
+            print(expression)
+            if not isinstance(expression.type, Matrix):
+                print("Error in line: " + str(node.line) + ": illegal operation "
+                      + str(variable) + " " + str(operator) + " " + str(expression))
                 return None
             else:
                 if expression.dim_X != matrix_left.dim_X or expression.dim_Y != matrix_left.dim_Y:
@@ -156,7 +163,7 @@ class TypeChecker(NodeVisitor):
             id = node.variable
             row = node.row
             column = node.column
-            t = self.symbol_table.getGlobal(id)
+            t = self.symbol_table.get(id)
             if row.value >= t.dim_Y or column.value >= t.dim_X:
                 print("Error in line: " + str(node.line) + ": index out of bound")
         else: print("Error in line: " + str(node.line) + ": index is not int")
@@ -172,7 +179,7 @@ class TypeChecker(NodeVisitor):
         return M(size, len(node.expression_lists))
 
     def visit_MatrixAssignment(self, node):
-        var = self.symbol_table.getGlobal(node.variable.name)
+        var = self.symbol_table.get(node.variable.name)
         if var is not None:
             print("Warning in line " + str(
                 node.line) + ": previously declared variable, now reassigning with type: " + str(
