@@ -30,8 +30,7 @@ class TypeChecker(NodeVisitor):
     def __init__(self):
         self.symbol_table = SymbolTable(None, "global")
         self.loop_nest = 0
-        self.function = False
-        self.curr_type = ""
+        self.errors = False
 
     def visit_Program(self, node):
         self.visit(node.instructions)
@@ -50,32 +49,39 @@ class TypeChecker(NodeVisitor):
                 if isinstance(type_right, VariableSymbol):
                     expected_type = result_types[operator][type_left.type][type_right.type]
                 else:
-                    expected_type = result_types[operator][type_left.type][type_right]
+                    if not isinstance(type_right, Matrix):
+                        expected_type = result_types[operator][type_left.type][type_right]
+                    else:
+                        expected_type = result_types[operator][type_left.type][type_right.__class__.__name__]
                 if not expected_type:
                     print("Error in line: " + str(node.line) + ": illegal operation "
                           + str(type_left) + " " + str(operator) + " " + str(type_right))
+                    self.errors = True
                     return BadType()
                 return expected_type
             else:
                 if not isinstance(type_right, VariableSymbol) and not isinstance(type_right, Matrix):
                     print("Error in line: " + str(node.line) + ": illegal operation "
                                + str(type_left) + " " + str(operator) + " " + str(type_right))
+                    self.errors = True
                     return BadType()
                 else:
                     if not isinstance(type_right, Matrix) and not isinstance(type_right.type, Matrix):
                         print("Error in line: " + str(node.line) + ": illegal operation "
                               + str(type_left) + " " + str(operator) + " " + str(type_right))
+                        self.errors = True
                         return BadType()
                     else:
                         if isinstance(type_right, Matrix):
                             if type_left.type.dim_X != type_right.dim_X or type_left.type.dim_Y != type_right.dim_Y:
-                                print(
-                                    "Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                                print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                                self.errors = True
                                 return BadType()
                             return Matrix(type_left.type.dim_X, type_right.dim_Y)
                         else:
                             if type_left.type.dim_X != type_right.type.dim_X or type_left.type.dim_Y != type_right.type.dim_Y:
                                 print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                                self.errors = True
                                 return BadType()
                             return Matrix(type_left.type.dim_X, type_right.type.dim_Y)
 
@@ -83,28 +89,39 @@ class TypeChecker(NodeVisitor):
             if isinstance(type_right, VariableSymbol):
                 if not isinstance(type_right.type, Matrix):
                     print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                    self.errors = True
                     return BadType()
                 else:
                     if type_left.dim_X != type_right.type.dim_X or type_left.dim_Y != type_right.type.dim_Y:
                         print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                        self.errors = True
                         return BadType()
                     return Matrix(type_left.dim_X, type_right.type.dim_Y)
             elif isinstance(type_right, Matrix):
                 if type_left.dim_X != type_right.dim_X or type_left.dim_Y != type_right.dim_Y:
                     print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                    self.errors = True
                     return BadType()
                 return Matrix(type_left.dim_X, type_right.dim_Y)
             else:
-                print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
-                return BadType()
+                expected_type = result_types[operator][type_left.__class__.__name__][type_right]
+                if not expected_type:
+                    print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                    self.errors = True
+                    return BadType()
+                return expected_type
         else:
             if isinstance(type_right, VariableSymbol):
                 expected_type = result_types[operator][type_left][type_right.type]
             else:
-                expected_type = result_types[operator][type_left][type_right]
+                if not isinstance(type_right, Matrix):
+                    expected_type = result_types[operator][type_left][type_right]
+                else:
+                    expected_type = result_types[operator][type_left][type_right.__class__.__name__]
             if not expected_type:
                 print("Error in line: " + str(node.line) + ": illegal operation "
                       + str(type_left) + " " + str(operator) + " " + str(type_right))
+                self.errors = True
                 return BadType()
             return expected_type
 
@@ -117,6 +134,7 @@ class TypeChecker(NodeVisitor):
         else:
             type = result_types['-'][t.__class__.__name__]
         if not type:
+            self.errors = True
             print("Error in line: " + str(node.line) + ": invalid unary negation type")
         return type
 
@@ -127,13 +145,16 @@ class TypeChecker(NodeVisitor):
         else:
             type = result_types['\''][t.__class__.__name__]
         if not type:
+            self.errors = True
             print("Error in line: " + str(node.line) + ": invalid transposition type")
         return type
 
     def visit_Variable(self, node):
         definition = self.symbol_table.get(node.name)
         if definition is None:
+            self.errors = True
             print("Error in line: " + str(node.line) + ": unknown variable")
+            return None
         else:
             return definition
 
@@ -151,6 +172,7 @@ class TypeChecker(NodeVisitor):
             if var is None:
                 print("Error in line " + str(
                     node.line) + ": no matrix with that name")
+                self.errors = True
             else:
                 self.visit(node.variable)
 
@@ -167,9 +189,9 @@ class TypeChecker(NodeVisitor):
             self.visit(node.variable)
 
     def visit_CompoundAssignment(self, node):
-        variable = self.symbol_table.get(node.variable.name)
         expression = self.visit(node.expression)
         operator = node.operator
+        variable = self.symbol_table.get(node.variable.name)
         if not isinstance(variable.type, Matrix):
             if isinstance(expression, VariableSymbol):
                 expected_type = result_types[operator][variable.type][expression.type]
@@ -178,19 +200,31 @@ class TypeChecker(NodeVisitor):
             if not expected_type:
                 print("Error in line: " + str(node.line) + ": illegal operation "
                       + str(variable) + " " + str(operator) + " " + str(expression))
+                self.errors = True
                 return BadType()
             return expected_type
         else:
             matrix_left = self.symbol_table.get(node.variable.name)
-            if not isinstance(expression.type, Matrix):
-                print("Error in line: " + str(node.line) + ": illegal operation "
-                      + str(variable) + " " + str(operator) + " " + str(expression))
-                return BadType()
-            else:
-                if expression.type.dim_X != matrix_left.type.dim_X or expression.type.dim_Y != matrix_left.type.dim_Y:
-                    print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+            if not isinstance(expression, VariableSymbol):
+                expected_type = result_types[operator][variable.type.__class__.__name__][expression]
+                if not expected_type:
+                    print("Error in line: " + str(node.line) + ": illegal operation "
+                          + str(variable) + " " + str(operator) + " " + str(expression))
+                    self.errors = True
                     return BadType()
-                return Matrix(matrix_left.dim_X, matrix_left.dim_Y)
+                return expected_type
+            else:
+                if not isinstance(expression.type, Matrix):
+                    print("Error in line: " + str(node.line) + ": illegal operation "
+                          + str(variable) + " " + str(operator) + " " + str(expression))
+                    self.errors = True
+                    return BadType()
+                else:
+                    if expression.type.dim_X != matrix_left.type.dim_X or expression.type.dim_Y != matrix_left.type.dim_Y:
+                        print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                        self.errors = True
+                        return BadType()
+                    return Matrix(matrix_left.type.dim_X, matrix_left.type.dim_Y)
 
 
     def visit_MatrixElement(self, node):
@@ -206,17 +240,21 @@ class TypeChecker(NodeVisitor):
             t = self.symbol_table.get(id)
             if isinstance(t, VariableSymbol) and isinstance(t.type, Matrix):
                 if row.value >= t.type.dim_Y or column.value >= t.type.dim_X:
+                    self.errors = True
                     print("Error in line: " + str(node.line) + ": index out of bound")
                     return BadType()
             elif isinstance(t, Matrix):
                 if row.value >= t.dim_Y or column.value >= t.dim_X:
+                    self.errors = True
                     print("Error in line: " + str(node.line) + ": index out of bound")
                     return BadType()
             else:
+                self.errors = True
                 print("Error in line: " + str(node.line) + ": this is not a matrix")
 
         else:
             print("Error in line: " + str(node.line) + ": index is not int")
+            self.errors = True
             return BadType()
 
     def visit_ListsOfExpressions(self, node):
@@ -227,6 +265,7 @@ class TypeChecker(NodeVisitor):
                 size = next_size
             if size != next_size:
                 print("Error in line: " + str(node.line) + ": Different rows size " + str(size) + " and " + str(next_size))
+                self.errors = True
                 return BadType()
         return Matrix(size, len(node.expression_lists))
 
@@ -237,7 +276,7 @@ class TypeChecker(NodeVisitor):
                 node.line) + ": previously declared variable, now reassigning with type: " + str(
                 Matrix.__name__))
         matrix = self.visit(node.expression_list)
-        self.symbol_table.put(node.variable.name, matrix)
+        self.symbol_table.put(node.variable.name, VariableSymbol(node.variable.name, matrix))
 
     def visit_PrintExpression(self, node):
         for expression in node.expression_list:
@@ -258,12 +297,14 @@ class TypeChecker(NodeVisitor):
             variable_type = type.type;
             if variable_type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize zeros with " + variable_type)
+                self.errors = True
                 return BadType()
             dim = self.get_dim(node.expression)
             return Matrix(dim, dim)
         else:
             if type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize zeros with this expression")
+                self.errors = True
                 return BadType()
             dim = self.get_dim(node.expression)
             return Matrix(dim, dim)
@@ -274,12 +315,14 @@ class TypeChecker(NodeVisitor):
             variable_type = type.type;
             if variable_type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize ones with " + variable_type)
+                self.errors = True
                 return BadType()
             dim = self.get_dim(node.expression)
             return Matrix(dim, dim)
         else:
             if type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize ones with this expression")
+                self.errors = True
                 return BadType()
             dim = self.get_dim(node.expression)
             return Matrix(dim, dim)
@@ -290,12 +333,14 @@ class TypeChecker(NodeVisitor):
             variable_type = type.type;
             if variable_type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize eye with " + variable_type)
+                self.errors = True
                 return BadType()
             dim = self.get_dim(node.expression)
             return Matrix(dim, dim)
         else:
             if type != 'int':
                 print("Error in line: " + str(node.line) + ": cannot initialize eye with this expression")
+                self.errors = True
                 return BadType()
             dim = self.get_dim(node.expression)
             return Matrix(dim, dim)
@@ -304,11 +349,13 @@ class TypeChecker(NodeVisitor):
     def visit_BreakInstruction(self, node):
         if self.loop_nest <= 0:
             print("Error in line: " + str(node.line) + ": break outside the loop")
+            self.errors = True
         return None
 
     def visit_ContinueInstruction(self, node):
         if self.loop_nest <= 0:
             print("Error in line: " + str(node.line) + ": continue outside the loop")
+            self.errors = True
         return None
 
     def visit_IfInstruction(self, node):
@@ -346,9 +393,11 @@ class TypeChecker(NodeVisitor):
         type = self.visit(node.start)
         if str(type) != 'int':
             print("Error in line: " + str(node.line) + ": invalid range type: " + str(type))
+            self.errors = True
         type = self.visit(node.end)
         if str(type) != 'int':
             print("Error in line: " + str(node.line) + ": invalid range type: " + str(type))
+            self.errors = True
 
         self.symbol_table.put(node.variable.name, type)
         self.visit(node.instruction)
@@ -359,6 +408,7 @@ class TypeChecker(NodeVisitor):
         type = self.visit(node.expression)
         if self.symbol_table.getParentScope() is None:
             print("Error in line: " + str(node.line) + ": return in outer of scope")
+            self.errors = True
             return BadType()
         return type
 

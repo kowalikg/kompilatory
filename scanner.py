@@ -60,7 +60,7 @@ class Scanner:
 
     # ignorowanie bialych znakow i komenatrzy
 
-    t_ignore = r' \t'
+    t_ignore = r' '
     t_ignore_COMMENT = r'\#.*' # koniec linii
 
     def find_tok_column(self, token):

@@ -26,5 +26,6 @@ if __name__ == '__main__':
     #print(program.printTree())
     typeChecker = TypeChecker()
     typeChecker.visit(program)  # or alternatively ast.accept(typeChecker)
-    program.accept(Interpreter())
+    if not typeChecker.errors:
+        program.accept(Interpreter())
 
