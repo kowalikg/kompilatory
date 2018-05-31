@@ -1,6 +1,5 @@
 #!/usr/bin/python
-from Exceptions import DuplicationError
-from enum import Enum
+
 
 class Symbol():
     pass
@@ -48,7 +47,7 @@ class SymbolTable(object):
             return symbol
         except:
             if self.parent is not None:
-                return self.getParentScope().getGlobal(name)
+                return self.getParentScope().get(name)
             return None
 
 

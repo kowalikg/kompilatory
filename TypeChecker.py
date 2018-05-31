@@ -115,14 +115,17 @@ class TypeChecker(NodeVisitor):
         if isinstance(t, VariableSymbol):
             type = result_types['-'][t.type.__class__.__name__]
         else:
-            type = result_types['-'][t]
+            type = result_types['-'][t.__class__.__name__]
         if not type:
             print("Error in line: " + str(node.line) + ": invalid unary negation type")
         return type
 
     def visit_TransUnaryExpression(self, node):
         t = self.visit(node.expression)
-        type = result_types['\''][t.type.__class__.__name__]
+        if isinstance(t, VariableSymbol):
+            type = result_types['\''][t.type.__class__.__name__]
+        else:
+            type = result_types['\''][t.__class__.__name__]
         if not type:
             print("Error in line: " + str(node.line) + ": invalid transposition type")
         return type
@@ -168,7 +171,10 @@ class TypeChecker(NodeVisitor):
         expression = self.visit(node.expression)
         operator = node.operator
         if not isinstance(variable.type, Matrix):
-            expected_type = result_types[operator][variable.type][expression.type]
+            if isinstance(expression, VariableSymbol):
+                expected_type = result_types[operator][variable.type][expression.type]
+            else:
+                expected_type = result_types[operator][variable.type][expression]
             if not expected_type:
                 print("Error in line: " + str(node.line) + ": illegal operation "
                       + str(variable) + " " + str(operator) + " " + str(expression))
@@ -200,6 +206,10 @@ class TypeChecker(NodeVisitor):
             t = self.symbol_table.get(id)
             if isinstance(t, VariableSymbol) and isinstance(t.type, Matrix):
                 if row.value >= t.type.dim_Y or column.value >= t.type.dim_X:
+                    print("Error in line: " + str(node.line) + ": index out of bound")
+                    return BadType()
+            elif isinstance(t, Matrix):
+                if row.value >= t.dim_Y or column.value >= t.dim_X:
                     print("Error in line: " + str(node.line) + ": index out of bound")
                     return BadType()
             else:
@@ -334,10 +344,10 @@ class TypeChecker(NodeVisitor):
         self.symbol_table = inner_scope
 
         type = self.visit(node.start)
-        if type != 'int':
+        if str(type) != 'int':
             print("Error in line: " + str(node.line) + ": invalid range type: " + str(type))
         type = self.visit(node.end)
-        if type != 'int':
+        if str(type) != 'int':
             print("Error in line: " + str(node.line) + ": invalid range type: " + str(type))
 
         self.symbol_table.put(node.variable.name, type)

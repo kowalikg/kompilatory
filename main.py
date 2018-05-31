@@ -5,6 +5,7 @@ from ply import yacc
 
 import scanner
 import Mparser
+from Interpreter import Interpreter
 from TreePrinter import TreePrinter
 from TypeChecker import TypeChecker
 
@@ -25,4 +26,5 @@ if __name__ == '__main__':
     #print(program.printTree())
     typeChecker = TypeChecker()
     typeChecker.visit(program)  # or alternatively ast.accept(typeChecker)
+    program.accept(Interpreter())
 

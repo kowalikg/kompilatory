@@ -157,7 +157,7 @@ class MParser:
 
     def p_for_instruction(self, p):
         """for_instruction : FOR variable_expression '=' expression ':' expression  instruction """
-        p[0] = AST.ForInstruction(p[2], p[4], p[6], p[7], p.lineno(2))
+        p[0] = AST.ForInstruction(p[2], p[4], p[6], p[7], p.lineno(1))
 
     def p_compound_instruction(self, p):
         """compound_instruction : '{' instructions '}' """

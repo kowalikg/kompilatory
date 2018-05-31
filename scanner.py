@@ -56,6 +56,8 @@ class Scanner:
     t_NOTEQ = r'\!='
     t_EQ = r'=='
 
+    t_STRING = r'".*"'
+
     # ignorowanie bialych znakow i komenatrzy
 
     t_ignore = r' \t'
