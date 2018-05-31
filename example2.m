@@ -1,12 +1,3 @@
-
-M = [1,2,7;5,6,9];
-N = [4,3,8;7,2,1];
-x = 7;
-x+=1;
-print x;
-M *= 2;
-print M;
-
 k = 1;
 while(k>0) {
     i = 0;
@@ -18,13 +9,37 @@ while(k>0) {
         i = 3;
 
     break;
-       print i;}
+       print i;
+}
+N = 3;
+M = 4;
+
+for j = 0: M {
+    for i = 0:N {
+        if (i > 1){
+            print "Kuniec";
+            break;
+        }
+        if (i > 0){
+            print "Prawie kuniec";
+            continue;
+        }
+        print i;
+    }
+    if (j > 2){
+        print "Koniec wszystkiego";
+        break;
+    }
+
+}
 
 y = 4 + 0;
 print y, 14;
 M = [1,2;5,6];
 print M;
 M[0,0] = 5;
+print M;
+M[0,0] -= 5;
 print M;
 
 if (y > 5)
@@ -34,3 +49,6 @@ print "olo";
 
 print -M;
 print M';
+N = [8,9;1,4];
+A = M/N;
+print A./N;

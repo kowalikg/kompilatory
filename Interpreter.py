@@ -2,7 +2,7 @@ import numpy
 
 import AST
 from Memory import *
-from Exceptions import  *
+from Exceptions import *
 from visit import *
 import sys
 
@@ -10,20 +10,24 @@ import sys
 def multiply(x, y):
     return [[elem * x for elem in row] for row in y]
 
+
 def divide(x, y):
     return [[elem / x for elem in row] for row in y]
 
-def add_matrices(x,y):
+
+def add_matrices(x, y):
     A = numpy.matrix(x)
     B = numpy.matrix(y)
     return A + B
 
-def sub_matrices(x,y):
+
+def sub_matrices(x, y):
     A = numpy.matrix(x)
     B = numpy.matrix(y)
     return A - B
 
-def mul_matrices(x,y):
+
+def mul_matrices(x, y):
     A = numpy.matrix(x)
     C = []
     rows = int(A.shape[0])
@@ -36,7 +40,8 @@ def mul_matrices(x,y):
         C.append(inner)
     return C
 
-def div_matrices(x,y):
+
+def div_matrices(x, y):
     A = numpy.matrix(x)
     C = []
     rows = int(A.shape[0])
@@ -48,6 +53,7 @@ def div_matrices(x,y):
             inner.append(result)
         C.append(inner)
     return C
+
 
 sys.setrecursionlimit(10000)
 
@@ -73,12 +79,12 @@ matrix_result = {
     '/': (lambda x, y: divide(x,y))
 }
 matrix_matrix_result = {
-    '*': (lambda x, y: numpy.matmul(x,y)),
-    '/': (lambda x, y: numpy.divide(x,y)),
-    '+': (lambda x, y: add_matrices(x,y)),
-    '.+': (lambda x, y: add_matrices(x,y)),
-    '-': (lambda x, y: sub_matrices(x,y)),
-    '.-': (lambda x, y: sub_matrices(x,y)),
+    '*': (lambda x, y: numpy.array(numpy.matmul(x,y)).tolist()),
+    '/': (lambda x, y: numpy.array(numpy.divide(x,y)).tolist()),
+    '+': (lambda x, y: add_matrices(x,y).tolist()),
+    '.+': (lambda x, y: add_matrices(x,y).tolist()),
+    '-': (lambda x, y: sub_matrices(x,y).tolist()),
+    '.-': (lambda x, y: sub_matrices(x,y).tolist()),
     '.*': (lambda x, y: mul_matrices(x,y)),
     './': (lambda x, y: div_matrices(x,y)),
 
@@ -167,8 +173,6 @@ class Interpreter(object):
     def visit(self, node):
         r1 = node.expression_left.accept(self)
         r2 = node.expression_right.accept(self)
-        # print(str(r1) + ":" + str(r2))
-        # print("BUM")
         if type(r1) is not list and type(r2) is not list:
             return result[node.operator](r1, r2)
         else:
@@ -259,7 +263,6 @@ class Interpreter(object):
         for expression in expressions:
             if expression is not None:
                 printed.append(str(expression))
-
         print(', '.join(printed))
 
     @when(AST.ListOfExpressions)

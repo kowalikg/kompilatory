@@ -191,22 +191,21 @@ class TypeChecker(NodeVisitor):
     def visit_CompoundAssignment(self, node):
         expression = self.visit(node.expression)
         operator = node.operator
-        variable = self.symbol_table.get(node.variable.name)
-        if not isinstance(variable.type, Matrix):
-            if isinstance(expression, VariableSymbol):
-                expected_type = result_types[operator][variable.type][expression.type]
-            else:
-                expected_type = result_types[operator][variable.type][expression]
-            if not expected_type:
-                print("Error in line: " + str(node.line) + ": illegal operation "
-                      + str(variable) + " " + str(operator) + " " + str(expression))
+        if isinstance(node.variable, MatrixElement):
+            var = self.symbol_table.get(node.variable.variable)
+            if var is None:
+                print("Error in line " + str(
+                    node.line) + ": no matrix with that name")
                 self.errors = True
-                return BadType()
-            return expected_type
+            else:
+                self.visit(node.variable)
         else:
-            matrix_left = self.symbol_table.get(node.variable.name)
-            if not isinstance(expression, VariableSymbol):
-                expected_type = result_types[operator][variable.type.__class__.__name__][expression]
+            variable = self.symbol_table.get(node.variable.name)
+            if not isinstance(variable.type, Matrix):
+                if isinstance(expression, VariableSymbol):
+                    expected_type = result_types[operator][variable.type][expression.type]
+                else:
+                    expected_type = result_types[operator][variable.type][expression]
                 if not expected_type:
                     print("Error in line: " + str(node.line) + ": illegal operation "
                           + str(variable) + " " + str(operator) + " " + str(expression))
@@ -214,18 +213,27 @@ class TypeChecker(NodeVisitor):
                     return BadType()
                 return expected_type
             else:
-                if not isinstance(expression.type, Matrix):
-                    print("Error in line: " + str(node.line) + ": illegal operation "
-                          + str(variable) + " " + str(operator) + " " + str(expression))
-                    self.errors = True
-                    return BadType()
-                else:
-                    if expression.type.dim_X != matrix_left.type.dim_X or expression.type.dim_Y != matrix_left.type.dim_Y:
-                        print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                matrix_left = self.symbol_table.get(node.variable.name)
+                if not isinstance(expression, VariableSymbol):
+                    expected_type = result_types[operator][variable.type.__class__.__name__][expression]
+                    if not expected_type:
+                        print("Error in line: " + str(node.line) + ": illegal operation "
+                              + str(variable) + " " + str(operator) + " " + str(expression))
                         self.errors = True
                         return BadType()
-                    return Matrix(matrix_left.type.dim_X, matrix_left.type.dim_Y)
-
+                    return expected_type
+                else:
+                    if not isinstance(expression.type, Matrix):
+                        print("Error in line: " + str(node.line) + ": illegal operation "
+                              + str(variable) + " " + str(operator) + " " + str(expression))
+                        self.errors = True
+                        return BadType()
+                    else:
+                        if expression.type.dim_X != matrix_left.type.dim_X or expression.type.dim_Y != matrix_left.type.dim_Y:
+                            print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
+                            self.errors = True
+                            return BadType()
+                        return Matrix(matrix_left.type.dim_X, matrix_left.type.dim_Y)
 
     def visit_MatrixElement(self, node):
 

@@ -57,7 +57,7 @@ class Assignment(Node):
         self.line = line
 
 #DONE
-#Partial
+#done
 class BinaryExpression(Expression):
     def __init__(self, expression_left, operator, expression_right, line):
         self.expression_left = expression_left
@@ -95,6 +95,7 @@ class MatrixAssignment(Node):
         self.line = line
 
 #DONE
+#done
 class CompoundAssignment(Node):
     def __init__(self, variable, operator, expression, line):
         self.variable = variable
