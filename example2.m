@@ -1,16 +1,39 @@
-k = 1;
-while(k>0) {
-    i = 0;
-    if(k<5)
-        i = 1;
-    else if(k<10)
-        i = 2;
-    else
-        i = 3;
+A = [1,1;7,1];
+B = [2,1;1,1];
+C = [1;7];
+D = [0,0;0,0];
+print "A", A;
+print "B", B;
+print "C", C;
+print "D", D;
+print "A*B", A*B;
+print "A.*B", A.*B;
+print "A/B", A/B;
+print "A./B", A./B;
+A *= B;
+print "A*=B", A;
+print "A.*B", A.*B;
+print "-A", -A;
+print "A'", A';
+print "A*C", A*C;
+print "A/D", A/D;
 
-    break;
-       print i;
-}
+D[0,0] = 3;
+D[0,1] += 1;
+print "D", D;
+
+x = 0;
+y = -7;
+print "x + y", x + y;
+print "y", -y;
+x += y;
+print "x+=y", x;
+
+if (y > 5)
+print "y>5";
+else
+print "y<=5";
+
 N = 3;
 M = 4;
 
@@ -32,23 +55,15 @@ for j = 0: M {
     }
 
 }
-
-y = 4 + 0;
-print y, 14;
-M = [1,2;5,6];
-print M;
-M[0,0] = 5;
-print M;
-M[0,0] -= 5;
-print M;
-
-if (y > 5)
-print y;
-else
-print "olo";
-
-print -M;
-print M';
-N = [8,9;1,4];
-A = M/N;
-print A./N;
+k = 1;
+while(k>0) {
+    i = 0;
+    if(k<5)
+        i = 1;
+    else if(k<10)
+        i = 2;
+    else
+        i = 3;
+    break;
+       print i;
+}

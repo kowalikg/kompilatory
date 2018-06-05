@@ -1,4 +1,5 @@
 import numpy
+from numpy.linalg import LinAlgError
 
 import AST
 from Memory import *
@@ -49,10 +50,19 @@ def div_matrices(x, y):
     for i in range(0, rows):
         inner = []
         for j in range(0, columns):
+            if y[i][j] == 0: return [[]]
             result = x[i][j] / y[i][j]
             inner.append(result)
         C.append(inner)
     return C
+
+def mul_invert(x, y):
+    A = numpy.matrix(x)
+    try:
+        B = numpy.linalg.inv(y)
+        return numpy.array(numpy.matmul(A, B)).tolist()
+    except LinAlgError:
+        return [[]]
 
 
 sys.setrecursionlimit(10000)
@@ -78,12 +88,17 @@ matrix_result = {
     "*": (lambda x, y: multiply(x,y)),
     '/': (lambda x, y: divide(x,y))
 }
+
 matrix_matrix_result = {
     '*': (lambda x, y: numpy.array(numpy.matmul(x,y)).tolist()),
-    '/': (lambda x, y: numpy.array(numpy.divide(x,y)).tolist()),
+    '*=': (lambda x, y: numpy.array(numpy.matmul(x,y)).tolist()),
+    '/': (lambda x, y: mul_invert(x,y)),
+    '/=': (lambda x, y: mul_invert(x,y)),
     '+': (lambda x, y: add_matrices(x,y).tolist()),
+    '+=': (lambda x, y: add_matrices(x,y).tolist()),
     '.+': (lambda x, y: add_matrices(x,y).tolist()),
     '-': (lambda x, y: sub_matrices(x,y).tolist()),
+    '-=': (lambda x, y: sub_matrices(x,y).tolist()),
     '.-': (lambda x, y: sub_matrices(x,y).tolist()),
     '.*': (lambda x, y: mul_matrices(x,y)),
     './': (lambda x, y: div_matrices(x,y)),
@@ -146,6 +161,8 @@ class Interpreter(object):
             element = M[variable[0]][variable[1]]
             M[variable[0]][variable[1]] = result[node.operator](element,expression)
             self.memory_stack.set(node.variable.variable, M)
+        elif type(variable) is list:
+            self.memory_stack.set(node.variable.name, matrix_matrix_result[node.operator](variable, expression))
         else:
             self.memory_stack.set(node.variable.name, result[node.operator](variable, expression))
 

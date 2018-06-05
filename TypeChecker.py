@@ -32,6 +32,28 @@ class TypeChecker(NodeVisitor):
         self.loop_nest = 0
         self.errors = False
 
+    def verify_matrices(self, operator, type_left, type_right, line):
+        if operator == '*' or operator == '*=':
+            if type_left.dim_Y != type_right.dim_X:
+                print("Error in line: " + str(line) + ": illegal operation: left matrix columns != right matrix rows.")
+                self.errors = True
+                return BadType()
+        elif operator == '/' or operator == '/=':
+            if type_right.dim_X != type_right.dim_Y:
+                print("Error in line: " + str(line) + ": illegal operation: right matrix is not invertible.")
+                self.errors = True
+                return BadType()
+            elif type_left.dim_Y != type_right.dim_X:
+                print("Error in line: " + str(line) + ": illegal operation: left matrix columns != right matrix rows.")
+                self.errors = True
+                return BadType()
+        else:
+            if type_left.dim_X != type_right.dim_X or type_left.dim_Y != type_right.dim_Y:
+                print("Error in line: " + str(line) + ": illegal operation on different matrix size")
+                self.errors = True
+                return BadType()
+        return Matrix(type_left.dim_X, type_right.dim_Y)
+
     def visit_Program(self, node):
         self.visit(node.instructions)
 
@@ -60,30 +82,25 @@ class TypeChecker(NodeVisitor):
                     return BadType()
                 return expected_type
             else:
-                if not isinstance(type_right, VariableSymbol) and not isinstance(type_right, Matrix):
-                    print("Error in line: " + str(node.line) + ": illegal operation "
-                               + str(type_left) + " " + str(operator) + " " + str(type_right))
-                    self.errors = True
-                    return BadType()
-                else:
-                    if not isinstance(type_right, Matrix) and not isinstance(type_right.type, Matrix):
+                if operator != '*' and operator != '/':
+                    if not isinstance(type_right, VariableSymbol) and not isinstance(type_right, Matrix):
                         print("Error in line: " + str(node.line) + ": illegal operation "
-                              + str(type_left) + " " + str(operator) + " " + str(type_right))
+                                   + str(type_left) + " " + str(operator) + " " + str(type_right))
                         self.errors = True
                         return BadType()
                     else:
-                        if isinstance(type_right, Matrix):
-                            if type_left.type.dim_X != type_right.dim_X or type_left.type.dim_Y != type_right.dim_Y:
-                                print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
-                                self.errors = True
-                                return BadType()
-                            return Matrix(type_left.type.dim_X, type_right.dim_Y)
+                        if not isinstance(type_right, Matrix) and not isinstance(type_right.type, Matrix):
+                            print("Error in line: " + str(node.line) + ": illegal operation "
+                                  + str(type_left) + " " + str(operator) + " " + str(type_right))
+                            self.errors = True
+                            return BadType()
                         else:
-                            if type_left.type.dim_X != type_right.type.dim_X or type_left.type.dim_Y != type_right.type.dim_Y:
-                                print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
-                                self.errors = True
-                                return BadType()
-                            return Matrix(type_left.type.dim_X, type_right.type.dim_Y)
+                            if isinstance(type_right, Matrix):
+                                return self.verify_matrices(operator, type_left.type, type_right, node.line)
+                            else:
+                                return self.verify_matrices(operator, type_left.type, type_right.type, node.line)
+                else:
+                    return self.verify_matrices(operator, type_left.type, type_right.type, node.line)
 
         elif isinstance(type_left, Matrix):
             if isinstance(type_right, VariableSymbol):
@@ -92,17 +109,10 @@ class TypeChecker(NodeVisitor):
                     self.errors = True
                     return BadType()
                 else:
-                    if type_left.dim_X != type_right.type.dim_X or type_left.dim_Y != type_right.type.dim_Y:
-                        print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
-                        self.errors = True
-                        return BadType()
-                    return Matrix(type_left.dim_X, type_right.type.dim_Y)
+                    return self.verify_matrices(operator, type_left, type_right.type, node.line)
+
             elif isinstance(type_right, Matrix):
-                if type_left.dim_X != type_right.dim_X or type_left.dim_Y != type_right.dim_Y:
-                    print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
-                    self.errors = True
-                    return BadType()
-                return Matrix(type_left.dim_X, type_right.dim_Y)
+                return self.verify_matrices(operator, type_left, type_right, node.line)
             else:
                 expected_type = result_types[operator][type_left.__class__.__name__][type_right]
                 if not expected_type:
@@ -112,7 +122,8 @@ class TypeChecker(NodeVisitor):
                 return expected_type
         else:
             if isinstance(type_right, VariableSymbol):
-                expected_type = result_types[operator][type_left][type_right.type]
+                #print(operator + ":" + type_left + ":" + str(type_right.type))
+                expected_type = result_types[operator][type_left][type_right.type.__class__.__name__]
             else:
                 if not isinstance(type_right, Matrix):
                     expected_type = result_types[operator][type_left][type_right]
@@ -129,10 +140,18 @@ class TypeChecker(NodeVisitor):
 
     def visit_NegUnaryExpression(self, node):
         t = self.visit(node.expression)
+
         if isinstance(t, VariableSymbol):
-            type = result_types['-'][t.type.__class__.__name__]
+            print(t.type.__class__.__name__)
+            if isinstance(t.type, str):
+                type = result_types['-'][t.type]
+            else:
+                type = result_types['-'][t.type.__class__.__name__]
         else:
-            type = result_types['-'][t.__class__.__name__]
+            if isinstance(t, str):
+                type = result_types['-'][t]
+            else:
+                type = result_types['-'][t.__class__.__name__]
         if not type:
             self.errors = True
             print("Error in line: " + str(node.line) + ": invalid unary negation type")
@@ -229,11 +248,8 @@ class TypeChecker(NodeVisitor):
                         self.errors = True
                         return BadType()
                     else:
-                        if expression.type.dim_X != matrix_left.type.dim_X or expression.type.dim_Y != matrix_left.type.dim_Y:
-                            print("Error in line: " + str(node.line) + ": illegal operation on different matrix size")
-                            self.errors = True
-                            return BadType()
-                        return Matrix(matrix_left.type.dim_X, matrix_left.type.dim_Y)
+                        return self.verify_matrices(operator, matrix_left.type, expression.type, node.line)
+
 
     def visit_MatrixElement(self, node):
 
@@ -275,7 +291,7 @@ class TypeChecker(NodeVisitor):
                 print("Error in line: " + str(node.line) + ": Different rows size " + str(size) + " and " + str(next_size))
                 self.errors = True
                 return BadType()
-        return Matrix(size, len(node.expression_lists))
+        return Matrix(len(node.expression_lists), size)
 
     def visit_MatrixAssignment(self, node):
         var = self.symbol_table.get(node.variable.name)
