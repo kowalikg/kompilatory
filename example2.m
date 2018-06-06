@@ -1,7 +1,9 @@
 A = [1,1;7,1];
 B = [2,1;1,1];
 C = [1;7];
-D = [0,0;0,0];
+
+D = zeros(2);
+
 print "A", A;
 print "B", B;
 print "C", C;
@@ -18,6 +20,9 @@ print "A'", A';
 print "A*C", A*C;
 print "A/D", A/D;
 
+print "A*eye(2)", A * eye(2);
+print "ones(2)./eye(2)",  ones(2) ./ eye(2);
+
 D[0,0] = 3;
 D[0,1] += 1;
 print "D", D;
@@ -25,7 +30,7 @@ print "D", D;
 x = 0;
 y = -7;
 print "x + y", x + y;
-print "y", -y;
+print "-y", -y;
 x += y;
 print "x+=y", x;
 
@@ -36,6 +41,7 @@ print "y<=5";
 
 N = 3;
 M = 4;
+
 
 for j = 0: M {
     for i = 0:N {

@@ -100,7 +100,16 @@ class TypeChecker(NodeVisitor):
                             else:
                                 return self.verify_matrices(operator, type_left.type, type_right.type, node.line)
                 else:
-                    return self.verify_matrices(operator, type_left.type, type_right.type, node.line)
+                    if isinstance(type_left, VariableSymbol):
+                        if isinstance(type_right, VariableSymbol):
+                            return self.verify_matrices(operator, type_left.type, type_right.type, node.line)
+                        else:
+                            return self.verify_matrices(operator, type_left.type, type_right, node.line)
+                    else:
+                        if isinstance(type_right, VariableSymbol):
+                            return self.verify_matrices(operator, type_left, type_right.type, node.line)
+                        else:
+                            return self.verify_matrices(operator, type_left, type_right, node.line)
 
         elif isinstance(type_left, Matrix):
             if isinstance(type_right, VariableSymbol):
@@ -142,7 +151,6 @@ class TypeChecker(NodeVisitor):
         t = self.visit(node.expression)
 
         if isinstance(t, VariableSymbol):
-            print(t.type.__class__.__name__)
             if isinstance(t.type, str):
                 type = result_types['-'][t.type]
             else:
@@ -263,6 +271,7 @@ class TypeChecker(NodeVisitor):
             column = node.column
             t = self.symbol_table.get(id)
             if isinstance(t, VariableSymbol) and isinstance(t.type, Matrix):
+
                 if row.value >= t.type.dim_Y or column.value >= t.type.dim_X:
                     self.errors = True
                     print("Error in line: " + str(node.line) + ": index out of bound")
