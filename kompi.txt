@@ -1,0 +1,1342 @@
+﻿[#123] Które z poniższych stwierdzeń dotyczących gramatyk atrybutywnych są prawdziwe? (poprawka1-nieznanyzestaw-zad4)
+>>a)Gramatyka atrybutywna to system bazujący na gramatyce bezkontekstowej, w którym symbolom gramatyki przypisuje się atrybuty, a produkcjom reguły wyliczania tych atrybutów.
+b)Gramatyki atrybutywne wykorzystywane są do przeprowadzania analizy leksykalnej.
+c)Jeśli wszystkie atrybuty w gramatyce atrybutywnej opartej o gramatykę LL(1) zawsze posiadają reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, to potrafimy wyliczyć wartości tych atrybutów równocześnie z parsingiem typu top-down wykorzystując mechanizm drugiego stosu przeznaczonego dla atrybutów oraz mechanizm symboli akcji.
+>>d)Jeśli w gramatyce atrybutywnej istnieją nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, ale także atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" pojawiają się w prawych stronach produkcji, to pod pewnymi warunkami dotyczącymi reguł obliczania tych ostatnich atrybutów (tzw. gramatyki L-atrybutywne) można wyliczyć wartości wszystkich atrybutów równocześnie z parsingiem typu bottom-up, ale kosztem pewnej modyfikacji bazowej gramatyki bezkontekstowej polegającej na wprowadzeniu dodatkowych nieterminali i związanych z nimi produkcji pustych.
+>>e)Jeśli w gramatyce atrybutywnej istnieją nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, ale także atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" pojawiają się w prawych stronach produkcji, to może zajść konieczność dwufazowej obsługi takich atrybutów: w pierwszej fazie parser buduje drzewo rozbioru, a w drugiej fazie jest ono "dekorowane" wartościami atrybutów podczas często wielokrotnego przeglądania jego wierzchołków.
+f)Każda atrybutywna gramatyka zupełna jest dobrze zdefiniowana.
+
+
+[#124] Rozważa się następującą gramatykę atrybutywną: (poprawka1-nieznanyzestaw-zad5) {podobne: 112, 122 - od 122 różni się odpowiedziami, odpowiednio c i d są różne)↑↑
+Z -> sXY    	X.b <- Y.d
+   	 	Y.c <- 1
+   	 	Y.e <- X.a
+Z -> tXY    	X.b <- Y.f
+   	 	Y.c <- X.a
+   	 	Y.e <- 2
+X -> u    	X.a <- 3
+Y -> v   	  	Y.d <- Y.c
+   	 	Y.f <- Y.e
+>>a) Powyższa gramatyka jest zupełna
+b) Powyższa gramatyka jest dobrze zdefiniowana
+c) Graf DT(S) jest cykliczny dla niektórych drzew wyprowadzenia S odpowiadających słowom z języka L(G)
+d) Istnieją relacje porządkujące zbiory A(X) i A(Y) wskazujące na możliwą kolejność obliczania atrybutów z A(X) i A(Y) dla każdego drzewa wyprowadzenia odpowiadającego słowu w języku L(G).
+
+[#125] Rozważa się dwie gramatyki G1 i G2: (poprawka1-3C-zad1)
+    G1: 	S -> for id = E to E do S | repeat S until E | id = E
+   	E -> E + V | V
+    	V -> id|(E)|id(E)|-V
+    G2: 	S -> for id = E to E do S | repeat S until E | id = E
+    	E -> E + V | V
+    	V -> id|(E)|id(E)|-E
+Gramatyki poddajemy odpowiednim przekształceniom chcąc zbudować na ich podstawie parsery LL(1). Które stwierdzenia są prawdziwe?
+a)Po przekształceniach obie gramatyki będą klasy LL(1).
+>>b)Po przekształceniach tylko gramatyka G1 będzie klasy LL(1).
+c)Po przekształceniach tylko gramatyka G2 będzie klasy LL(1).
+d)Po przekształceniach żadna z gramatyk nie będzie klasy LL(1).
+
+[#126] Dana jest gramatyka uzupełniona, używana w pewnym edytorze równań. Operator [strzałka-w-dół] oznacza dolny indeks, zać operator [strzałka-w-górę] górny indeks. (poprawka1-3D-zad1)
+      (0) E’ -> E
+E -> E ↓ E ↑ E
+E -> E ↓ E
+E -> E ↑ E
+E -> (eps)
+E -> c
+Dana jest tablica parsera SLR(1) dla powyższej gramatyki: (...)
+Produkcja (1) powinna być traktowana specjalnie i używana zawsze, o ile to możliwe, zamiast produkcji (2) i (3), gdy użytkownicy wolą składać wyrażenie rodzaju a↓i↑2 jako a(i 2 w pionie) zamiast a(najpierw i, potem 2). Przyjmujemy, że oba operatory ↑ i ↓ są prawostronnie łączne i mają identyczny priorytet.
+Usuwając niejednoznaczności z tablicy parsera stwierdzamy, że:
+a) procedura taka jest bezużyteczna, gdyż parser będzie rozpoznawał inny język niż generowany przez gramatykę,
+b)w komórce (11,}) należy rozstrzygnąć konflikt na rzecz red1,
+c)w komórce (7, ↑) należy rozstrzygnąć konflikt na rzecz sh10, gdyż operator ↑ jest prawostronnie łączny, a priorytety ↑ i ↓ są równe,
+d)w komórce (8, ↓) należy rozstrzygnąć konflikt na rzecz red 3, gdyż priorytet operatora ↓ jest identyczny jak operatora ↑,
+e)w komórce (11, ↓) musimy rozstrzygnąć konflikt wybierając red1, gdyż produkcja (1) powinna być specjalnie traktowana i używana zawsze, o ile to możliwe,
+f)nie można zbudować deterministycznego parsera dla niejednoznacznej gramatyki.
+
+[#127] Dana jest poniższa gramatyka L-atrybutywna. Terminal (token) num odpowiada stałym numerycznym, num.val jest wartością odpowiedniej stałej.  (poprawka1-3D-zad2)
+S->E		S.val = E.val
+		E.count = 1
+E -> E1 * T	E.val = 2 E1.val + 2 T.val
+		E1.count = E.count + 1
+		T.count = E.count + 1
+E -> T		E.val = T.val
+		T.count = E.count + 1
+T -> T1 + P	T.val = T1.val + P.val
+		T1.count = T.count + 1
+		P.count = T.count + 1
+T -> P		T.val = P.val
+		P.count = T.count + 1
+P -> (E)		P.val = E.val
+		E.count = P.count
+P -> num 	P.val = num.val / P.count
+
+Wartość atrybutu S.val dla słowa 2+(4*3) wynosi:
+a)1
+b)3 ⅘
+c)14
+d)?
+e)?
+f)?
+g)?
+h)żadne z powyższych
+
+[#128] Wybierz stwierdzenia prawdziwe dla gramatyk atrybutywnych: (poprawka1-3D-zad3) {podobne: 113}
+>>a)Gramatyka atrybutywna jest gramatyką typu L, gdy każdy dziedziczony atrybut pewnego symbolu występującego w prawej stronie produkcji zależy tylko od atrybutów symboli pojawiających się z lewej strony tego symbolu w prawej stronie produkcji oraz dziedziczonych atrybutów symbolu występującego w lewej stronie produkcji.
+b)Każda gramatyka L-atrybutywną jest zarazem gramatyką S-atrybutywną.
+>>c)Dla gramatyk L-atrybutywnych możliwe jest obliczanie atrybutów podczas przeszukiwania drzewa rozbioru syntaktycznego w głąb metodą zejść rekurencyjnych (deph-first).
+d)Dla gramatyk L-atrybutywnych opartych o gramatyki LL(1) możliwe jest obliczanie atrybutów podczas parsingu zstępującego prowadzonego metodą wykorzystującą zbiór funkcji rekurencyjnych zbudowanych na podstawie tabeli parsera LL(1).
+e)Dla gramatyk L-atrybutywnych opartych o gramatyki LL(1) nie jest możliwe obliczanie atrybutów podczas parsingu LL(1) prowadzonego metodą nierekurencyjną (automatową) przy użyciu dodatkowego stosu atrybutów oraz mechanizmu symboli akcji.
+>>f)Obliczanie atrybutów dla gramatyk S-atrybutywnych opartych na gramatykach LL(1) może być prowadzone równolegle z parsingiem top-down (realizowanym zarówno metodą wykorzystującą zbiór funkcji rekurencyjnych zbudowanych na podstawie tabeli parsera LL(1), jak i metoda nierekurencyjną (automatową) przy użyciu dodatkowego stosu atrybutów i mechanizmu symboli akcji) bez żadnego przekształcenia bazowych gramatyk bezkontekstowych.
+>>g)Translacja bottom-up dla gramatyk S-atrybutywnych opartych o gramatyki LR(1) może być prowadzona równolegle z parsingiem. Obliczanie atrybutów syntetyzowanych następuje bezpośrednio przed redukcjami.
+
+
+[#129] Które z poniższych stwierdzeń są prawdziwe? (poprawka1-3D-zad4) {podobne: 114}
+>>a)Każda gramatyka SLR(1) jest równocześnie gramatyką LR(1).
+b)Klasa gramatyk, które można analizować używając metody LR(1), jest właściwym podzbiorem klasy gramatyk, które można analizować używając metody LL(1).
+>>c)Parser LL może wykrywać błędy tak wcześnie, jak to jest możliwe, podczas przeglądania wejścia od lewej do prawej strony.
+>>d)Metoda LALR(1) pozwala na zbudowanie dla danej gramatyki tablic parsera o rozmiarach nie większych, niż ma to miejsce w przypadku metody LR(1) dla tej samej gramatyki.
+>>>e)Jeżeli dana gramatyka jest zarówno gramatyką typu SLR(1), jak i LALR(1), to tablice parsera konstruowane obu metodami mają identyczne rozmiary.
+f)Klasa gramatyk LL(1) jest właściwym podzbiorem klasy gramatyk SLR(1).
+g)Przy budowaniu tablicy parsera top-down (LL(1)) nie możemy skorzystać z gramatyki zawierającej produkcje puste (Eps-produkcje).
+>>h)Przy budowaniu tablicy parsera top-down LL(1) wykorzystywane są zbiory FIRST1 i FOLLOW1 wyznaczane dla symboli nieterminalnych gramatyki.
+i)??
+j)Przy budowaniu tablicy parsera LALR(1) wykorzystywane są zbiory FOLLOW1 wyznaczane dla symboli nieterminalnych gramatyki.
+
+
+[#117] Które z poniższych stwierdzeń dotyczących gramatyk atrybutywnych są prawdziwe? (kol2-1E-zad4)
+>>a)Gramatyka atrybutywna to system bazujący na gramatyce bezkontekstowej, w którym symbolom gramatyki przypisuje się atrybuty, a produkcjom reguły wyliczania tych atrybutów.
+>>b)Gramatyki atrybutywne wykorzystywane są do przeprowadzania analizy semantycznej i generacji kodu pośredniego.
+c)Jeśli wszystkie atrybuty w gramatyce atrybutywnej zawsze posiadają reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, to potrafimy wyliczyć wartości tych atrybutów równocześnie z parsingiem typu bottom-up wykorzystując mechanizm drugiego stosu obsługiwanego synchronicznie z zasadniczym stosem parsera.
+>>d)Jeśli w gramatyce atrybutywnej istnieją nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, ale także atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" pojawiają się w prawych stronach produkcji, to pod pewnymi warunkami dotyczącymi reguł obliczania tych ostatnich atrybutów (tzw. gramatyki L-atrybutywne) można wyliczyć wartości wszystkich atrybutów równocześnie z parsingiem typu top-down, ale kosztem koniecznej modyfikacji bazowej gramatyki bezkontekstowej polegającej na wprowadzeniu dodatkowych nieterminali oraz produkcji pustych.
+>>e)Jeśli w gramatyce atrybutywnej istnieją nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, ale także atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" pojawiają się w prawych stronach produkcji, to może zajść konieczność dwufazowej obsługi takich atrybutów: w pierwszej fazie parser buduje drzewo rozbioru, a w drugiej fazie jest ono "dekorowane" wartościami atrybutów podczas często wielokrotnego przeglądania jego wierzchołków.
+f)Każda atrybutywna gramatyka zupełna jest dobrze zdefiniowana.
+
+[#121] Które z poniższych stwierdzeń dotyczących gramatyk atrybutywnych są prawdziwe (kol2-1G-zad4)
+>>a) Gramatyka atrybutywna to system bazujący na gramatyce bezkontekstowej, w którym symbolom gramatyki przypisuje się atrybuty, a produkcjom reguły wyliczania tych atrybutów
+b) Gramatyki atrybutywne wykorzystywane są do przeprowadzania analizy leksykalnej
+c) Jeśli wszystkie atrybuty w gramatyce atrybutywnej zawsze posiadają reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, to potrafimy wyliczyć wartości tych atrybutów równocześnie z parsingiem typu top-down wykorzystując mechanizm drugiego stosu przeznaczonego dla atrybutów oraz mechanizm symboli akcji.
+>>d) Jeśli w gramatyce atrybutywnej istnieją nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, ale także atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" pojawiają się w prawych stronach produkcji, to pod pewnymi warunkami dotyczącymi reguł obliczania tych ostatnich atrybutów (tzw. gramatyki L-atrybutywne) można wyliczyć wartości wszystkich atrybutów równocześnie z parsingiem typu bottom-up, ale kosztem pewnej modyfikacji bazowej gramatyki bezkontekstowej (wprowadzenie dodatkowych nieterminali i związanych z nimi produkcji pustych).
+>>e) Jeśli w gramatyce atrybutywnej istnieją nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony produkcji, ale także atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" pojawiają się w prawych stronach produkcji, to może zajść konieczność dwufazowej obsługi takich atrybutów: w pierwszej fazie parser buduje drzewo rozbioru, a w drugiej fazie jest ono "dekorowane" wartościami atrybutów podczas często wielokrotnego przeglądania jego wierzchołków.
+f) Każda atrybutywna gramatyka zupełna jest dobrze zdefiniowana.
+
+[#122] Rozważa się następującą gramatykę atrybutywną: (kol2-1G-zad5)
+Z -> sXY    	X.b <- Y.d
+   	 	Y.c <- 1
+   	 	Y.e <- X.a
+Z -> tXY    	X.b <- Y.f
+   	 	Y.c <- X.a
+   	 	Y.e <- 2
+X -> u    	X.a <- 3
+Y -> v   		Y.d <- Y.c
+   	 	Y.f <- Y.e
+>>a) Powyższa gramatyka jest zupełna
+>>b) Powyższa gramatyka jest dobrze zdefiniowana
+>>c) Graf DT(S) jest acykliczny dla wszystkich drzew wyprowadzenia S odpowiadających słowom z języka L(G)
+d) Nie istnieją relacje porządkujące zbiory A(X) i A(Y) wskazujące na możliwą poprawną kolejność obliczania atrybutów z A(X) i A(Y) dla każdego drzewa wyprowadzenia odpowiadającego słowu w języku L(G)
+
+[#79] Dana jest gramatyka uzupełniona (kol1-1A-zad5)
+	S’ -> Sp
+	S -> S*
+	S -> L
+	L -> a ( S )
+	L -> a
+oraz jej tablica parsera typu LR: (...)
+Prefiksami żywotnymi są wyrażenia:
+>>a) S*
+b) S**
+>>c) a(a
+>>d) a(a(
+e) a(a)
+f) a(L)
+>>g) a(S)
+>>h) a(S*
+i) a(S*)
+j) a(L*)
+
+[#94] Które z poniższych stwierdzeń jest **prawdziwe**? (kol1-1D-zad3)
+>>a) Jednym z powodów rozdzielenia analizy leksykalnej od syntaktycznej jest prostota projektowania. Przykładowo: parser zawierający reguły dotyczące komentarzy i białych znaków jest znacznie bardziej skomplikowany, niż gdyby komentarze i białe znaki były usuwane w analizatorze leksykalnym.
+>>b) Kolejnym z powodów rozdzielenia analizy leksykalnej od syntaktycznej jest wydajność kompilatora. Oddzielny analizator leksykalny umożliwia utworzenie bardziej wyspecjalizowanego i przez to bardziej wydajnego modułu analizy.
+>>c) Dalszym powodem rozdzielenia analizy leksykalnej od syntaktycznej jest zwiększenie przenośności kompilatora. Osobliwości kodowania znaków wejściowych i inne anomalie zależne od urządzeń mogą być ograniczone do analizatora leksykalnego.
+d) Tokenem nazywamy podłańcuch symboli wejściowych pasujący do wzorca symbolu leksykalnego.
+>>e) Wzorzec jest to reguła związana z pewnym symbolem leksykalnym (tokenem) określająca budowę leksemów odpowiadających temu tokenowi. Najczęściej używaną specyfikacją wzorców są wyrażenia regularne.
+
+[#96] Dana jest gramatyka uzupełniona (kol1-1D-zad5)
+	E’ -> E
+	E -> V - E
+	E -> V
+	V -> a ( E )
+	V -> a
+oraz jej tablica parsera typu LR: (...)
+Prefiksami żywotnymi są wyrażenia:
+>>a) E
+b) EE
+>>c) V - V
+d) V - (
+e) aa
+>>f) a(a
+>>g) a(V-
+>>h) a(E
+i) a(a)
+j) a(E-
+
+[#111] Dana jest następująca gramatyka:(kol1-1G-zad5) 
+S’ -> S
+	S -> a(L)
+	S -> a
+	L -> L-S
+	L -> S
+oraz jej tablica parsera typu LR: (...)
+Prefiksami żywotnymi są wyrażenia:
+>>a) S
+b) S-S
+c) L-L
+d) a((
+>>e) a(a
+>>f) a(L
+>>g) a(S
+h) a-
+i) a(S-
+>>j) a(L-
+
+[#112] Rozważmy następującą gramatyke atrybutywną: (kol2-nieznanyzestaw) 
+Z -> X		X.a <- 1
+X -> tY		X.b <- Y.e
+			Y.c <- Y.f
+			Y.d <- X.a
+Y -> u 		Y.e <- 2
+		Y.f <- Y.d
+Y -> v 		Y.e <- Y.c
+		Y.f <- 3
+>>a)powyższa gramatyka jest zupełna
+>>b)powyższa gramatyka jest dobrze zdefiniowana
+c)Graf DT(S) jest cykliczny dla niektórych drzew wyprowadzenia S odpowiadających słowom z języka L(G)
+>>d)Istnieje relacja porządkująca zbiór A(Y) wskazująca na mozliwą kolejność obliczania atrybutów z A(Y) dla każdego drzewa wyprowadzenia odpowiadającego słowu w języku L(G)
+
+[#116] Które z poniższych stwierdzeń są prawdziwe? (kol2-1E-zad3)
+a)Istnieją gramatyki, dla których rozmiar tablicy parsera LR jest mniejszy niż rozmiar tablicy parsera LALR.
+>>b)Istnieją gramatyki, dla których rozmiar tablicy parsera SLR jest identyczny jak rozmiar tablicy parsera LALR.
+c)Jeśli budujemy parser bottom-up (typu LR) dla gramatyki niejednoznacznej usuwając konflikty, to tablica takiego parsera ma rozmiar większy od rozmiaru tablicy parsera bottom-up dla gramatyki jednoznacznej (dla tego samego języka) stanowiącej przekształcenie gramatyki niejednoznacznej.
+d)Budujemy parser bottom-up (typu LR) dla gramatyki niejednoznacznej usuwając konflikty. Możliwe konflikty w takich parserach, to konflikty typu: shift-shift, shift-reduce, reduce-reduce.
+e)Usuwanie konfliktów w parserach top-down w celu zbudowania deterministycznego parsera dla gramatyki niejednoznacznej nie jest praktykowane, gdyż na ogół nie jesteśmy w stanie uwzględnić dodatkowych wymagań stawianych drzewom rozbioru będącym wynikiem parsingu przez definicję języka programowania.
+
+[#118] Rozważa się dwie gramatyki G1 i G2: (kolos2-1G-zad1)
+S -> while E do S | do S while E | id=E
+E -> E+V | V
+V -> id | (E) | id(E) | -E
+---
+S -> while E do S | do S while E | id=E
+E -> E+V | V
+V -> id | (E) | id(E) | -V
+Gramatyki poddajemy odpowiednim przekształceniom chcąc  zbudować na ich podstawie parsery LL(1). Które stwierdzenia są prawdziwe?
+a) Po przekształceniach obie gramatyki będą klasy LL(1)
+b) Po przekształceniach tylko gramatyka G1 będzie klasy LL(1)
+>>c) Po przekształceniach tylko gramatyka G2 będzie klasy LL(1)
+d) Po przekształceniach żadna z gramatyk nie będzie klasy LL(1)
+
+[#120] Które z poniższych stwierdzeń są prawdziwe? (kol2-1G-zad3)
+>>a) Istnieją gramatyki, dla których rozmiar tablicy parsera LR jest większy niż rozmiar tablicy parsera LALR.
+b) Istnieją gramatyki, dla których rozmiar tablicy parsera SLR jest mniejszy niż rozmiar tablicy parsera LALR
+>>c) Jeśli budujemy parser bottom-up dla gramatyki niejednoznacznej usuwając konflikty, to tablica takiego parsera ma rozmiar nie większy od rozmiaru tablicy parsera bottom-up gramatyki jednoznacznej (dla tego samego języka) stanowiącej przekształcenie gramatyki niejednoznacznej.
+>>d) Budujemy parser bottom-up (typu LR) dla gramatyki niejednoznacznej usuwając konflikty. Możliwe konflikty w takich parserach, to konflikty typu: shift-reduce, reduce-reduce.
+e) Usuwanie konfliktów w parserach bottom-up (typu LR) w celu zbudowania deterministycznego parsera dla gramatyki niejednoznacznej nie jest praktykowane, gdyż na ogół nie jesteśmy w stanie uwzględnić dodatkowych wymagań stawianych drzewom rozbioru będącym wynikiem parsingu przez definicję języka programowania
+
+[#75] Które z poniższych stwierdzeń są prawdziwe?  (kol1-1A-zad1) 
+>>a) Przykładem błędu leksykalnego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze.
+>>b) Błędem syntaktycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego.
+>>c) Błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora.
+d)Niedozwolony skok do wnętrza ciała pętli programowej należy do kategorii błędów syntaktycznych.
+>>e) Użycie tego samego identyfikatora kategorii w dwóch różnych definicjach typu wyliczeniowego to przykład błędu semantycznego.
+f) Użycie instrukcji break lub continue poza ciałem pętli lub instrukcji break poza ciałem instrukcji wyboru to przykład błędu syntaktycznego.
+>>g) Dwie identyczne etykiety przy dwóch różnych instrukcjach w tłumaczonym module kodu źródłowego to przykład błędu semantycznego.
+h) Przykładem błędu leksykalnego jest niewykorzystanie ani jednego komentarza w tekście źródłowym programu.
+i) Wykorzystanie “pętli nieskończonej” to przykład błędu semantycznego w programie komputerowym.
+>>j) Przykładem błędu syntaktycznego jest opuszczenie słowa kluczowego while, jeśli wcześniej użyto słowa kluczowego do.
+
+[#77] Eliminując niejednoznaczność gramatyki poprzez konwersję do innej gramatyki musimy zachować: (kol1-1A-zad3)
+a) pewne drzewo wyprowadzenia oryginalnej gramatyki dla każdego słowa wejściowego
+b) drzewo wyprowadzenia oryginalnej gramatyki  dla każdego jednoznacznego słowa wejściowego
+>>c) zbiór słów generowanych przez oryginalną gramatykę
+c) wyprowadzenia oryginalnej gramatyki dla każdego jednoznacznego słowa wejściowego
+d) wyprowadzenie oryginalnej gramatyki dla każdego słowa wejściowego
+>>f) odpowiednie własności drzew generowanych przez oryginalną gramatykę takie jak np. priorytety i kierunki wiązania operatorów w wyrażeniach, sposób wiązania fraz “else” z odpowiednimi frazami “if” w instrukcjach warunkowych, itp.
+
+[#78] Dana jest następująca specyfikacja dla skanera:  (kol1-1A-zad4)
+	aa*			{return TOKEN1}
+	c(a|b)*			{return TOKEN2}
+	ab*c			{return TOKEN3}
+	caa*			{return TOKEN4}
+	b*aa*(c|eps)		{return TOKEN5}
+Wybierz prawdziwe stwierdzenia:
+a)Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób: 
+	abc abc aa bbaa c c caba c cbb 
+	3  3  1  5  2  2  2  2  2
+>>b)Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób: 
+	abc abc aa bbaac c caba c cbb 
+	3  3  1  5  2  2  2  2
+>>c)Słowo ‘cabcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób:
+	cab cab caabbaa c c caba c cbb
+	2  2  2  2  2  2  2  2
+>>d) Słowa ‘babcabcaabbaacccabaccbb’ nie da się podzielić na tokeny według powyższej specyfikacji
+e)Każde niepuste słowo nad alfabetem E=(a,b,c) może zostać według powyższej specyfikacji skanera podzielone na tokeny.
+>>f)Specyfikacja skanera jest redundantna, tzn można usunąć pewną regułę nie zmieniając zachowania skanera na żadnym słowie.
+
+[#80] Które z poniższych stwierdzeń są prawdziwe?  (kol1-1B-zad1) 
+>>a)Przykładem błędu leksykalnego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze.
+>>b)Błędem syntaktycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego. 
+c)Błędem syntaktycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora.
+>>d)Niedozwolony skok do wnętrza ciała pętli programowej należy do kategorii błędów semantycznych.
+e)Użycie tego samego identyfikatora kategorii w dwóch różnych definicjach typu wyliczeniowego to przykład błędu syntaktycznego.
+>>f)Użycie instrukcji ‘break’ lub ‘continue’ poza ciałem pętli lub instrukcji ‘break’ poza ciałem instrukcji wyboru to przykład błędu semantycznego.
+>>g)Dwie identyczne etykiety przy dwóch różnych instrukcjach w tłumaczonym module kodu źródłowego to przykład błędu semantycznego.
+h)Przykładem błędu leksykalnego jest niewykorzystanie ani jednego komentarza w tekście źródłowym programu.
+i)Wykorzystanie “pętli nieskończonej” to przykład błędu semantycznego w programie komputerowym.
+>>j)Przykładem błędu syntaktycznego jest opuszczenie słowa kluczowego ‘while’, jeśli wcześniej użyto słowa kluczowego ‘do’.
+
+[#81] Które z poniższych stwierdzeń są prawdziwe?  (kol1-1B-zad2)
+>>a)Projektant skanera wykorzystuje głównie mechanizmy teoretyczne związane z automatami skończonymi oraz gramatykami i wyrażeniami regularnymi.
+>>b)Parser dokonuje rozbioru wejściowego ciągu tokenów w oparciu o gramatykę bezkontekstową opisującą składnię języka źródłowego, budując drzewo rozbioru syntaktycznego.
+c)Dwoma zasadniczymi metodami parsingu są: metoda top-down polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtwarzanie wyprowadzenia prawostronnego poczynając od korzenia drzewa (symbolu początkowego gramatyki) oraz metoda bottom-up polegająca na budowaniu drzewa rozbioru  syntaktycznego poprzez odtwarzanie wyprowadzenia lewostronnego poczynając od liści drzewa (analizowanego ciągu tokenów).
+>>d)Podstawowymi zadaniami analizy semantycznej jest m. in. sprawdzanie zgodności typów składników poszczególnych konstrukcji językowych, sprawdzanie unikalności etykiet i innych elementów języka, kontrola poprawności przekazywania sterowania w programie itd.
+e)Analiza syntaktyczna bazuje na metodach opartych o gramatyki atrybutywne i definicje kierowane składnią
+>>f)Front-end (przód kompilatora) realizuje funkcję analizy leksykalnej, syntaktycznej i semantycznej oraz odpowiada za wygenerowanie kodu pośredniego.
+>>g)Kod pośredni, niezależny od platformy systemowo-sprzętowej, na której ma być wykonywany program docelowy, umożliwia zastosowanie wielu algorytmów optymalizacji mających na celu usprawnienie i zwiększenie efektywności kodu tłumaczonego programu.
+>>h)Kod docelowy może być tworzony metodą kompilacji lub może być interpretowany, albo też wykonywany metodą just-in-time
+
+[#82] Dana jest gramatyka bezkontekstowa odpowiedniej klasy oraz słowo o długości n. Algorytm parsingu LL(k) dla ustalonego k będzie posiadał złożoność:   (kol1-1B-zad3) 
+>>a)czasową O(n), pamięciową O(n)
+b)czasową O(n), pamięciową O(n^2)
+c)czasową O(n), pamięciową O(1)
+d)czasową O(n^2), pamięciową O(n)
+e)czasową O(n^2), pamięciową O(n^2)
+f)czasową O(n^2), pamięciową O(n^3)
+g)czasową O(n^3), pamięciową O(n^2)
+h)czasową O(n^3), pamięciową O(n^3)
+i)wykładniczą czasową, wykładnicza pamięciową
+j)żadne z powyższych
+
+[#83] Dana jest następująca specyfikacja dla skanera:  (kol1-1B-zad4)  
+aa*			{return TOKEN1} 
+b(a|c)*			{return TOKEN2} 
+ac*b			{return TOKEN3} 
+c*aa*(b|eps)		{return TOKEN4} 
+baa*			{return TOKEN5} 
+Wybierz prawdziwe stwierdzenia:
+a)Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób:
+ab cab caa b baaccca bacc b b 
+3 4 4 2 2 2 2 2
+b)Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób:
+ab cab caab baa c c cab accb b 
+3 4 4 5 4 4 4 3 2
+>>c)Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób:
+ab cab caab baaccca bacc b b  
+3 4 4 2 2 2 2
+d)Każde niepuste słowo nad alfabetem E=(a,b,c) może zostać według powyższej specyfikacji skanera podzielone na tokeny.
+>>e)Specyfikacja skanera jest redundantna, tzn można usunąć pewną regułę nie zmieniając zachowania skanera na żadnym słowie.
+
+[#84] Dana jest gramatyka uzupełniona (kol1-1B-zad5) 
+	E’ -> E
+	E -> E - V
+	E -> V
+	V -> a ( E )
+	V -> a
+oraz jej tablica parsera typu LR: (...)
+Prefiksami żywotnymi są wyrażenia:
+>>a)E
+>>b)a(a
+c)E-E
+>>d)a(
+>>e)a(E
+>>f)a(a(
+g)-Va
+h)a-a
+>>i)a(V
+j)a(V)
+
+
+[#85] Wybierz stwierdzenia prawdziwe dla gramatyk atrybutywnych: (kol2-1B-zad3)
+a)Gramatyka atrybutywna jest gramatyką typu S, gdy każdy syntetyzowany atrybut symbolu występującego w prawej stronie produkcji zależy tylko od atrybutów symboli pojawiających się z lewej strony tego symbolu w prawej stronie produkcji oraz dziedziczonych atrybutów symbolu występującego w lewej stronie produkcji.
+>>b)Każda gramatyka S-atrybutywna jest zarazem gramatyką L-atrybutywną.
+>>c)Dla gramatyk L-atrybutywnych opartych o gramatyki LL(1) możliwe jest obliczanie atrybutów podczas parsingu zstępującego prowadzonego metodą wykorzystującą zbiór funkcji rekurencyjnych zbudowanych na podstawie tabeli parsera LL(1) oraz schematu tłumaczenia.
+d)Dla gramatyk L-atrybutywnych opartych o gramatyki LL(1) nie jest możliwe obliczanie atrybutów podczas parsingu LL(1) prowadzonego metodą predykcyjną (automatową) przy użyciu dodatkowego stosu atrybutów.
+>>e)Dla gramatyk L-atrybutywnych możliwe jest obliczanie atrybutów podczas przeszukiwania drzewa rozbioru syntaktycznego w głąb metodą zejść rekurencyjnych (depth-first).
+>>f)Translacja bottom-up dla gramatyk S-atrybutywnych opartych o gramatyki LR(1) może być prowadzona równolegle z parsingiem. Obliczanie atrybutów syntetyzowanych następuje bezpośrednio przed redukcjami.
+>>g)Translacja bottom-up dla gramatyk L-atrybutywnych opartych o gramatyki LL(1) (a także o niektóre gramatyki LR(1) niebędące gramatykami LL(1)) może być prowadzona równolegle z parsingiem. Gramatyka wymaga jednak wcześniejszych modyfikacji polegających na wprowadzeniu dodatkowych nieterminali i związanych z nimi produkcji pustych. Obliczanie atrybutów następuje bezpośrednio przed redukcjami w zmodyfikowanej gramatyce.
+
+[#86]  Które z poniższych stwierdzeń są prawdziwe? (kol2-1B-zad4)
+a) Każda gramatyka LR(1) jest równocześnie gramatyką SLR(1).
+>>b) Klasa gramatyk, które można analizować używając metody LR(1), jest właściwym nadzbiorem klasy gramatyk, które można analizować używając metody LL(1).
+>>c) Parser LR może wykrywać błędy tak wcześnie, jak to jest możliwe, podczas przeglądania wejścia od lewej do prawej strony.
+>>d) Metoda LALR(1) pozwala na zbudowanie dla danej gramatyki tablic parsera o rozmiarach nie większych, niż ma to miejsce w przypadku metody LR(1) dla tej samej gramatyki.
+e) Jeżeli dana gramatyka jest zarówno gramatyką typu SLR(1), jak i LALR(1), to tablica parsera konstruowana metodą LALR(1) dla tej gramatyki ma większy rozmiar od tablicy budowanej metodą SLR(1) dla tej samej gramatyki.
+f) Klasa gramatyk SLR(1) jest właściwym nadzbiorem klasy gramatyk LL(1).
+>>g) Przy budowaniu tablicy parsera top-down (LL(1)) wykorzystywane są zbiory FIRST1 i FOLLOW1 wyznaczane dla symboli nieterminalnych gramatyki.
+>>h) Przy budowaniu tablicy parsera bottom-up (SLR(1)) wykorzystywane są zbiory sytuacji dopuszczalnych dla przedrostków żywotnych.
+i) Przy budowaniu tablicy parsera top-down (LL(1)), a także przy budowaniu tablicy parsera bottom-up (LR(1)) nie możemy skorzystać z gramatyki zawierającej produkcje puste (Eps-Prod).
+>>j) Przy budowaniu tablicy parsera SLR(1) wyk. są zbiory FOLLOW, wyznaczane dla symboli nieterminalnych gramatyki.
+
+[#87] Które z powyższych stwierdzeń są prawdziwe?(kol1-1C-zad1):
+a) Przykładem błędu składniowego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze.
+b) Błędem leksykalnym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego.
+>>c) Błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora.
+>>d)Niedozwolony skok do wnętrza ciała pętli programowej należy do kategorii błędów semantycznych.
+>>e) Użycie tego samego identyfikatora kategorii w dwóch różnych definicjach typu wyliczeniowego to przykład błędu semantycznego.
+>>f)  Użycie instrukcji ‘break’ lub ‘continue’ poza ciałem pętli lub instrukcji ‘break’ poza ciałem instrukcji wyboru to przykład błędu semantycznego.
+g) Dwie identyczne etykiety przy dwóch różnych instrukcjach w tłumaczonym module kodu źródłowego to przykład błędu syntaktycznego.
+h) Przykładem błędu leksykalnego jest niewykorzystanie ani jednego komentarza w tekście źródłowym programu.
+i) Wykorzystanie “pętli nieskończonej” to przykład błędu syntaktycznego w programie komputerowym.
+>>j) Przykładem błędu syntaktycznego jest opuszczenie słowa kluczowego ‘while’, jeśli wcześniej użyto słowa kluczowego ‘do’.
+
+[#88] Wybierz prawdziwe stwierdzenia w stosunku do analizatora leksykalnego lex/flex: (kol1-1C-zad2)
+a) jako wejście pobiera automat skończony.
+b) jako wejście pobiera program w języku C.
+c) jako wejście pobiera ciąg leksemów w języku C.
+d) jako wejście pobiera gramatykę bezkontekstową.
+>>e) jako wejście pobiera zbiór wyrażeń regularnych.
+f) na wyjściu generuje ciąg tokenów.
+>>g) na wyjściu generuje deterministyczny automat skończony
+h) na wyjściu generuje parser deterministyczny
+i) na wyjściu generuje analizator semantyczny
+j) na wyjściu generuje zbiór wyrażeń regularnych.
+
+[#89] Dana jest gramatyka postaci normalnej Chomsky’ego oraz słowo o długości ‘n’. Algorytm parsingu CYK będzie posiadał złożoność: (kol1-1C-zad3)
+a)czasowa O(n), pamięciowa O(n)
+b)czasowa O(n), pamięciowa O(n^2)
+c)czasowa O(n^2), pamięciowa O(n)
+d)czasowa O(n^2), pamięciowa O(n^2)
+e)czasowa O(n^2), pamięciowa O(n^3)
+>>f)czasowa O(n^3), pamięciowa O(n^2)
+g)czasowa O(n^3), pamięciowa O(n^3)
+h)wykładnicza czasowa i wykładnicza pamięciowa
+i)żadne z powyższych
+
+[#90] Dana jest następująca specyfikacja dla skanera:(kol1-1C-zad4)  
+aa*			{return TOKEN1}
+	c(a|b)*			{return TOKEN2}
+	ab*c			{return TOKEN3}
+	caa*			{return TOKEN4}
+	b*aa*(c|eps)		{return TOKEN5}
+Wybierz prawdziwe stwierdzenia:
+a)Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób: 
+abc abc aa bbaa   c   c    caba   c   cbb 
+	3     3     1   5        2   2    2        2    2
+>>b)Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób: 
+abc abc aa bbaac   c    caba   c   cbb 
+	3     3     1   5          2    2        2    2
+c)Słowo ’abcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób: 
+abc abc aa bbaac   c    ca      bac   cbb 
+	3     3     1   5          2    4        5    2
+d)Każde niepuste słowo nad alfabetem E=(a,b,c) może zostać według powyższej specyfikacji skanera podzielone na tokeny.
+>>e)Specyfikacja skanera jest redundantna, tzn można usunąć pewną regułę nie zmieniając zachowania skanera na żadnym słowie.
+
+[#91] Dana jest gramatyka uzupełniona:(kol1-1C-zad5)
+	E’ -> E
+	E -> (E)
+	E -> a ( E )
+	E -> a
+oraz jej tablica parsera typu LR: (...)
+Prefiksami żywotnymi są wyrażenia:
+>>a)E
+b)EE
+>>c)((
+>>d)(a
+>>e)a((
+f)a)
+g)()
+>>h)a(
+i)a(a(a)
+j)a(a)
+
+[#92]Które z powyższych stwierdzeń są prawdziwe?(kol1-1D-zad1)
+>>a) Przykładem błędu leksykalnego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze.
+b) Błędem semantycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego.
+>>c) Błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora.
+d) Niedozwolony skok do wnętrza ciała pętli programowej należy do kategorii błędów syntaktycznych.
+>>e) Użycie tego samego identyfikatora kategorii w dwóch różnych definicjach typu wyliczeniowego to przykład błędu semantycznego.
+>>f) Użycie instrukcji ‘break’ lub ‘continue’ poza ciałem pętli lub instrukcji ‘break’ poza ciałem instrukcji wyboru to przykład błędu semantycznego.
+>>g) Dwie identyczne etykiety przy dwóch różnych instrukcjach w tłumaczonym module kodu źródłowego to przykład błędu semantycznego.
+h) Przykładem błędu leksykalnego jest niewykorzystanie ani jednego komentarza w tekście źródłowym programu.
+i) Wykorzystanie “pętli nieskończonej” to przykład błędu semantycznego w programie komputerowym.
+j) Przykładem błędu semantycznego jest opuszczenie słowa kluczowego ‘while’, jeśli wcześniej użyto słowa kluczowego ‘do’.
+
+[#93]Które z poniższych stwierdzeń są prawdziwe? (kol1-1D-zad2)
+a) Projektant skanera wykorzystuje głównie mechanizmy teoretyczne związane z gramatykami bezkontekstowymi i automatami ze stosem.
+b) Parser dokonuje rozbioru wejściowego ciągu tokenów w oparciu o wyrażenia regularne opisujące składnię języka źródłowego, budując graf automatu skończonego.
+>>c) Dwoma zasadniczymi metodami parsingu są: metoda top-down polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtwarzanie wyprowadzenia lewostronnego poczynając od korzenia drzewa (symbolu początkowego gramatyki) oraz metoda bottom-up polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtwarzanie wyprowadzenia prawostronnego poczynając od liści drzewa (analizowanego ciągu tokenów).
+d) Podstawowymi zadaniami analizy składniowej jest m. in. sprawdzanie zgodności typów składników poszczególnych konstrukcji językowych, sprawdzanie unikalności etykiet i innych elementów języka, kontrola poprawności przekazywania sterowania w programie itd.
+e) Analiza syntaktyczna bazuje na metodach opartych o gramatyki atrybutywne i definicje kierowane składnią lub schematy tłumaczenia.
+>>f) Front-end (przód kompilatora) realizuje funkcję analizy leksykalnej, syntaktycznej i semantycznej oraz odpowiada za wygenerowanie kodu pośredniego.
+g) Kod pośredni, zależny od platformy systemowo-sprzętowej, na której ma być wykonywany program docelowy, umożliwia zastosowanie wielu algorytmów optymalizacyjnych mających na celu usprawnienie i zwiększenie efektywności kodu tłumaczonego programu.
+>>h) Kod docelowy może być tworzony metodą kompilacji lub może być interpretowany, albo też wykonywany metodą just-in-time.
+
+[#95]Dana jest następująca specyfikacja dla skanera:(kol1-1D-zad4)
+aa*			{return TOKEN1}
+baa*			{return TOKEN2}
+ac*b			{return TOKEN3}
+c*aa*(b|eps)		{return TOKEN4}
+b(a|c)*			{return TOKEN5}
+Wybierz prawdziwe stwierdzenia:
+>>a) Słowo acccbaaaccabcaabbaabbaaccbaaa zostanie podzielone na skaner w następujący sposób:
+	acccb   aaa   ccab   caab   baa   b   baacc   baaa
+	3	 1       4         4	      2	5   5           2
+b) Słowo acccbaaaccabcaabbaabbaaccbaaa  zostanie podzielone przez skaner w następujący sposób:
+	acccb   aaa   ccab   caa   b   baa   b   baacc   baaa
+	3	 1       4         4	      5    2      5   5          2
+>>c) Słowo bacccbaaaccabcaabbaabbaaccbaaa zostanie podzielone przez skaner w następujący sposób:
+	baccc 	baaacca   baca   b   baa    b   baacc   baaa
+	5          5               5        5    2       5   5           2
+d)Każde niepuste słowo nad alfabetem E=(a,b,c) może zostać według powyższej specyfikacji skanera podzielone na tokeny.
+e)Specyfikacja skanera jest redundantna, tzn można usunąć pewną regułę nie zmieniając zachowania skanera na żadnym słowie.
+
+[#97] Które z poniższych stwierdzeń są prawdziwe?(kol1-1E-zad1)
+a) Przykładem błędu syntaktycznego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze.
+>>b) błędem syntaktycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego.
+>>c) Błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora.
+>>d) Niedozwolony skok do wnętrza ciała pętli programowej należy do kategorii błędów semantycznych.
+e)Użycie tego samego identyfikatora kategorii w dwóch różnych definicjach typu wyliczeniowego to przykład błędu syntaktycznego.
+>>f) Użycie instrukcji ‘break’ lub ‘continue’ poza ciałem pętli lub instrukcji ‘break’ poza ciałem instrukcji wyboru to przykład błędu semantycznego.
+>>g) Dwie identyczne etykiety przy dwóch różnych instrukcjach w tłumaczonym module kodu źródłowego to przykład błędu semantycznego.
+h) Przykładem błędu leksykalnego jest niewykorzystanie ani jednego komentarza w tekście źródłowym programu.
+i) Wykorzystanie “pętli nieskończonej” to przykład błędu semantycznego w programie komputerowym.
+>>j) Przykładem błędu syntaktycznego jest opuszczenie słowa kluczowego ‘while’, jeśli wcześniej użyto słowa kluczowego ‘do’.
+
+[#98] Wybierz prawdziwe stwierdzenia w stosunku do generatora ‘yacc/bison’:(kol1-1E-zad2)
+a) jako wejście pobiera program w języku C
+b) jako wejście pobiera zbiór wyrażeń regularnych
+c) jako wejście pobiera ciąg leksemów w języku C
+>>d) jako wejście pobiera gramatykę bezkontekstową
+e) jako wejście pobiera automat ze stosem
+f) na wyjściu generuje ciąg tokenów
+g) na wyjściu generuje deterministyczny automat skończony
+>>h) na wyjściu generuje parser deterministyczny
+i) na wyjściu generuje analizator semantyczny
+j) na wyjściu generuje gramatykę bezkontekstową
+
+[#99] Wybierz prawdziwe stwierdzenia:(kol1-1E-zad3)
+a) Tworzenie parsera jest sensowną procedurą tylko w odniesieniu do gramatyki jednoznacznej, nie ma sensu konstruowanie parsera dla gramatyki niejednoznacznej.
+b) Dla każdej gramatyki jednoznacznej można skonstruować deterministyczny parser LR(1) lub LL(k)
+>>c) Dla każdego bezkontekstowego języka zdeterminowanego istnieje gramatyka LR(1)
+>>d) Żadna gramatyka niejednoznaczna nie może być gramatyką LR(1)
+>>e) Żadna gramatyka niejednoznaczna nie może być gramatyką LL(k) dla żadnego ‘k’.
+>>f) Żadna gramatyka wymagająca lewostronnej faktoryzacji nie może być gramatyką LL(k) dla żadnego ‘k’.
+g) Jednoznaczna gramatyka posiadająca lewostronną rekurencję może być gramatyką LL(k) dla pewnego ‘k’.
+
+[#100] Dana jest następująca specyfikacja dla skanera:(kol1-1E-zad4) 
+aa*			{return TOKEN1}
+caa*			{return TOKEN2}
+ab*c			{return TOKEN3}
+c(a|b)* 			{return TOKEN4}
+b*aa*(c|eps)		{return TOKEN5} 
+Wybierz prawdziwe stwierdzenia:
+a) Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone na skaner w następujący sposób:
+	abc   abc   aa   bbaa   c   c   caba   c   cbb
+	3       3       1    5          4   4   4        4   4
+>>b)  Słowo ‘abcabcaabbaacccabaccbb’ zostanie podzielone na skaner w następujący sposób:
+	abc   abc   aa   bbaac    c   caba   c   cbb
+	3       3       1    5            4   4        4   4
+c) Słowo ‘babaacabcaabbaacccabaccbb’ zostanie podzielone na skaner w następujący sposób:
+	ba   baac   abc   aa   bbaac   c   ca   bac   cbb
+	5     5         3       1     5           4   2    5       4
+d)Każde niepuste słowo nad alfabetem E=(a,b,c) może zostać według powyższej specyfikacji skanera podzielone na tokeny.
+e)Specyfikacja skanera jest redundantna, tzn można usunąć pewną regułę nie zmieniając zachowania skanera na żadnym słowie.
+
+[#101] Dana jest gramatyka uzupełniona (kol1-1E-zad5)
+	S’ -> S
+	S -> -S
+	S -> L
+	L -> a ( S )
+	L -> a
+oraz jej tablica parsera typu LR: (...)
+Prefiksami żywotnymi są wyrażenia:
+>>a) S
+b) SS
+c) -Sa
+d) a((
+>>e) a(a
+>>f) a(L
+>>g) a(S
+>>h) -L
+i) a(a)
+j) a(-L)
+
+[#102] Które z powyższych stwierdzeń są prawdziwe?(kol1-1F-zad1)
+>>a) Przykładem błędu leksykalnego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze.
+>>b) Błędem syntaktycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego.
+>>c) Błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora.
+>>d) Niedozwolony skok do wnętrza ciała pętli programowej należy do kategorii błędów semantycznych.
+>>e) Użycie tego samego identyfikatora kategorii w dwóch różnych definicjach typu wyliczeniowego to przykład błędu semantycznego.
+f)  Użycie instrukcji ‘break’ lub ‘continue’ poza ciałem pętli lub instrukcji ‘break’ poza ciałem instrukcji wyboru to przykład błędu syntaktycznego.
+>>g) Dwie identyczne etykiety przy dwóch różnych instrukcjach w tłumaczonym module kodu źródłowego to przykład błędu semantycznego.
+h) Przykładem błędu leksykalnego jest niewykorzystanie ani jednego komentarza w tekście źródłowym programu.
+i) Wykorzystanie “pętli nieskończonej” to przykład błędu semantycznego w programie komputerowym.
+>>j) Przykładem błędu syntaktycznego jest opuszczenie słowa kluczowego ‘while’, jeśli wcześniej użyto słowa kluczowego ‘do’.
+
+[#103] Dana jest gramatyka bezkontekstowa odpowiedniej klasy oraz słowo o długości n. Algorytm parsingu LR(1) dla ustalonego k będzie posiadał złożoność: (kol1-1F-zad2)
+>>a)czasową O(n), pamięciową O(n)
+b)czasową O(n), pamięciową O(n^2)
+c)czasową O(n), pamięciową O(1)
+d)czasową O(n^2), pamięciową O(n)
+e)czasową O(n^2), pamięciową O(n^2)
+f)czasową O(n^2), pamięciową O(n^3)
+g)czasową O(n^3), pamięciową O(n^2)
+h)czasową O(n^3), pamięciową O(n^3)
+i)wykładniczą czasową, wykładnicza pamięciową
+j)żadne z powyższych.
+
+[#105] Dana jest następująca specyfikacja dla skanera: (kol1-1F-zad4)
+aa*b			{return TOKEN1}
+	c*(a|b)			{return TOKEN2}
+	ac*b			{return TOKEN3}
+	b(a|c)*			{return TOKEN4}
+	baa*			{return TOKEN5}
+Wybierz prawdziwe stwierdzenia:
+a) Słowo ‘cbbabcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób: 
+cb   ba   bca   bcaa   b   baa   ccca   bacc   b   b
+2     4     4       4        2   5       2         4        4   4
+b) Słowo ‘cbbabcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób: 
+cb   ba   bca   bcaa   b   baa   ccca   bacc   b   b
+2     4     4       4        2   5       2         4        2   2
+>>c) Słowo ‘cbbabcabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób:
+cb   ba   bca   bcaa   b   baaccca   bacc   b   b
+2     4     4       4        2   4               4        2   2
+d)Każde niepuste słowo nad alfabetem E=(a,b,c) może zostać według powyższej specyfikacji skanera podzielone na tokeny.
+>>e)Specyfikacja skanera jest redundantna, tzn można usunąć pewną regułę nie zmieniając zachowania skanera na żadnym słowie.
+
+[#106] Dana jest gramatyka uzupełniona (kol1-1F-zad5)
+	S’ -> S
+	S -> S=L
+	S -> L
+	L -> a ( S )
+	L -> a
+oraz jej tablica parsera typu LR: (...)
+Prefiksami żywotnymi są wyrażenia:
+>>a) S
+b) S=S
+c) L=L
+d) a((
+>>e) a(a
+>>f) a(L
+>>g) a(S
+h)a=
+>>i) a(S=
+j) a(L=
+
+[#107] Które z powyższych stwierdzeń są prawdziwe?(kol1-1G-zad1)
+>>a) Przykładem błędu leksykalnego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze
+>>b) Błędem syntaktycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego.
+>>c) Błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora.
+d) Niedozwolony skok do wnętrza ciała pętli programowej należy do kategorii błędów syntaktycznych..
+>>e) Użycie tego samego identyfikatora kategorii w dwóch różnych definicjach typu wyliczeniowego to przykład błędu semantycznego.
+>>f)  Użycie instrukcji ‘break’ lub ‘continue’ poza ciałem pętli lub instrukcji ‘break’ poza ciałem instrukcji wyboru to przykład błędu semantycznego.
+g) Dwie identyczne etykiety przy dwóch różnych instrukcjach w tłumaczonym module kodu źródłowego to przykład błędu syntaktycznego.
+h) Przykładem błędu leksykalnego jest niewykorzystanie ani jednego komentarza w tekście źródłowym programu.
+i) Wykorzystanie “pętli nieskończonej” to przykład błędu semantycznego w programie komputerowym.
+j) Przykładem błędu semantycznego jest opuszczenie słowa kluczowego ‘while’, jeśli wcześniej użyto słowa kluczowego ‘do’.
+
+[#110] Dana jest następująca specyfikacja dla skanera:(kol1-1G-zad4)
+	aa*			{return TOKEN1}
+	caa*			{return TOKEN2}
+	ab*c			{return TOKEN3}
+	c(a|b)*			{return TOKEN4}
+	b*aa*(c|eps)		{return TOKEN5}
+Wybierz prawdziwe stwierdzenia:
+>>a)Słowo ‘cabcabcaabbaacccabaccbbcaa’ zostanie podzielone przez skaner w następujący sposób: 
+	cab   cab   caabbaa   c   c   caba   c   cbb   caa
+	4       4       4               4  4   4         4   4      2
+b)Słowo ‘cabcabcaabbaacccabaccbbcaa’ zostanie podzielone przez skaner w następujący sposób: 
+	cab   c   abc   aa   bbaac   c   caba   c   cbb   caa
+	4       4   3      1     5           4   4        4    4      2
+c)Słowo ‘babaacabcaabbaacccabaccbb’ zostanie podzielone przez skaner w następujący sposób: 
+	ba   baac   abc   aa   bbaac   c   ca   bac   cbb
+	5     5         3       1    5            4   2    5      4
+>>d) Słowa ‘babcabcaabbaacccabaccbb’ nie da się podzielić na tokeny według powyższej specyfikacji.
+e)Każde niepuste słowo nad alfabetem E=(a,b,c) może zostać według powyższej specyfikacji skanera podzielone na tokeny.
+f)Specyfikacja skanera jest redundantna, tzn można usunąć pewną regułę nie zmieniając zachowania skanera na żadnym słowie.
+
+[#113] Wybierz stwierdzenia prawdziwe dla gramatyk atrybutywnych: (kol2-1H-zad3)
+>>a)Gramatyka atrybutywna jest gramatyką typu L, gdy każdy dziedziczony atrybut pewnego symbolu występującego w prawej stronie produkcji zależy tylko od atrybutów symboli pojawiających się z lewej strony tego symbolu w prawej stronie produkcji oraz dziedziczonych atrybutów symbolu występującego w lewej stronie produkcji.
+b)Każda gramatyka L-atrybutywną jest zarazem gramatyką S-atrybutywną.
+c)Gramatyki L-atrybutywne bazujące na gramatykach LL(1) umożliwiają bez żadnych przekształceń bazowej gramatyki bezkontekstowej obliczanie atrybutów równolegle z parsingiem bottom-up.
+>>d)Dla gramatyk L-atrybutywnych bazujących na gramatykach LL(1) możliwe jest obliczanie atrybutów podczas parsingu zstępującego prowadzonego metodą wykorzystującą zbiór funkcji rekurencyjnych zbudowanych na podstawie tabeli parsera LL(1) oraz schematu tłumaczenia.
+>>e)Dla gramatyk L-atrybutywnych bazujących na gramatykach LL(1) możliwe jest obliczanie atrybutów podczas parsingu zstępującego prowadzonego metodą nierekurencyjną (automatową) przy użyciu dodatkowego stosu atrybutów oraz mechanizmu symboli akcji.
+>>f)Translacja bottom-up dla gramatyk S-atrybutywnych opartych o gramatyki LR(1) może być prowadzona równolegle z parsingiem. Obliczanie atrybutów syntetyzowanych następuje bezpośrednio przed redukcjami.
+>>g)Translacja bottom-up dla gramatyk L-atrybutywnych opartych o gramatyki LL(1) (a także o niektóre gramatyki LR(1) niebędące gramatykami LL(1)) może być prowadzona równolegle z parsingiem. Gramatyka wymaga jednak wcześniejszych modyfikacji polegających na wprowadzeniu dodatkowych nieterminali i związanych z nimi produkcji pustych. Obliczanie atrybutów następuje bezpośrednio przed redukcjami w zmodyfikowanej gramatyce.
+
+[#114] Które z poniższych stwierdzeń są prawdziwe? (kol2-1H-zad4)
+>>a)Każda gramatyka SLR(1) jest równocześnie gramatyką LR(1).
+>>b)Klasa gramatyk, które można analizować używając metody LR(1), jest właściwym nadzbiorem klasy gramatyk, które można analizować używając metody LL(1).
+>>c)Parser LL może wykrywać błędy tak wcześnie, jak to jest możliwe, podczas przeglądania wejścia od lewej do prawej strony.
+>>d)Metoda LALR(1) pozwala na zbudowanie dla danej gramatyki tablic parsera o rozmiarach nie większych, niż ma to miejsce w przypadku metody LR(1) dla tej samej gramatyki.
+e)Jeżeli dana gramatyka jest zarówno gramatyką typu SLR(1), jak i LALR(1), to tablica parsera konstruowana metodą LALR(1) dla tej gramatyki ma rozmiar większy, niż tablica budowana metodą SLR(1) dla tej samej gramatyki.
+f)Klasa gramatyk LL(1) jest właściwym nadzbiorem klasy gramatyk SLR(1).
+g)Przy budowaniu tablicy parsera top-down (LL(1)), a także przy budowaniu tablicy parsera bottom-up (LR(1)) nie możemy skorzystać z gramatyki zawierającej produkcje puste (Eps-produkcje).
+>>h)Przy budowaniu tablicy parsera top-down LL(1) wykorzystywane są zbiory FIRST1 i FOLLOW1 wyznaczane dla symboli nieterminalnych gramatyki.
+>>i)Przy budowaniu tablicy parsera bottom-up LALR(1) wykorzystywane są zbiory sytuacji dopuszczalnych dla przedrostków żywotnych.
+>>j)Przy budowaniu tablicy parsera SLR(1) wykorzystywane są zbiory FOLLOW1 wyznaczane dla symboli nieterminalnych gramatyki.
+
+[#115] Dana jest poniższa gramatyka L-atrybutywna, w której atrybut 'exp' typu całkowitego jest dziedziczony, zaś atrybut 'val' typu całkowitego jest syntetyzowany. (kol2-1E-zad2) 
+S -> L          	L.exp = 1
+                    	S.val = L.val
+L0 -> L1B      	L1.exp = L0.exp + 1
+                    	B.exp = L0.exp
+                    	L0.val = L1.val + B.val
+L -> B           	B.exp = L.exp
+                    	L.val = B.val
+B -> 0           	B.val = 2B.exp
+B -> 1           	B.val = 0
+Które z poniższych stwierdzeń jest prawdziwe?
+a)Wynikiem tłumaczenia słowa x jest decval(x), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x.
+b) Wynikiem tłumaczenia słowa x jest 2*decval(x), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x.
+c) Wynikiem tłumaczenia słowa x jest decval(xR), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, zaś xR odbicie lustrzane słowa x.
+d) Wynikiem tłumaczenia słowa x jest 1/2*decval(xR), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, zaś xR odbicie lustrzane słowa x.
+e) Wynikiem tłumaczenia słowa x jest decval(neg(x)), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, zaś neg(x) słowo powstałe z negacji wszystkich bitów słowa x.
+>>f)Wynikiem tłumaczenia słowa x jest 2*decval(neg(x)), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, zaś neg(x) słowo powstałe z negacji wszystkich bitów słowa x.
+g) Wynikiem tłumaczenia słowa x jest decval(neg(xR)), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, xR oznacza odbicie lustrzane słowa x, zaś neg(x) słowo powstałe z negacji wszystkich bitów słowa x.
+h) Wynikiem tłumaczenia słowa x jest 1/2*decval(neg(xR)), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, xR oznacza odbicie lustrzane słowa x, zaś neg(x) słowo powstałe z negacji wszystkich bitów słowa x.
+
+[#119] Dana jest poniższa gramatyka L-atrybutywna, w której atrybut 'exp' typu całkowitego jest dziedziczony, zaś atrybut 'val' typu całkowitego jest syntetyzowany. (kol2-1G-zad2)
+S -> L         	L.exp = 1
+               	S.val = L.val
+L0 -> BL1      	L1.exp = L0.exp + 1
+               	B.exp = L0.exp
+               	L0.val = L1.val + B.val
+L -> B         	B.exp = L.exp
+               	L.val = B.val
+B -> 0         	B.val = 2B.exp
+B -> 1         	B.val = 0
+Które z poniższych stwierdzeń jest prawdziwe?
+a) Wynikiem tłumaczenia słowa x jest decval(x), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x.
+b) Wynikiem tłumaczenia słowa x jest 1/2*decval(x), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x.
+c) Wynikiem tłumaczenia słowa x jest decval(xR), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, zaś xR odbicie lustrzane słowa x.
+d) Wynikiem tłumaczenia słowa x jest 2*decval(xR), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, zaś xR odbicie lustrzane słowa x.
+e) Wynikiem tłumaczenia słowa x jest decval(neg(x)), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, zaś neg(x) słowo powstałe z negacji wszystkich bitów słowa x.
+f) Wynikiem tłumaczenia słowa x jest 1/2*decval(neg(x)), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, zaś neg(x) słowo powstałe z negacji wszystkich bitów słowa x.
+g) Wynikiem tłumaczenia słowa x jest decval(neg(xR)), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, xR oznacza odbicie lustrzane słowa x, zaś neg(x) sł owo powstałe z negacji wszystkich bitów słowa x.
+>>h) Wynikiem tłumaczenia słowa x jest 2*decval(neg(xR)), gdzie decval(x) oznacza wartość dziesiętną słowa binarnego x, xR oznacza odbicie lustrzane słowa x, zaś neg(x) słowo powstałe z negacji wszystkich bitów słowa x.
+
+[#1] Wskaż zdania prawdziwe, dotyczące LR1:
+>>a)na prawo od osnowy tylko terminale
+b)parser shift-reduce potrafi rozpoznać osnowę znając zawartość części stosu bez wierzchołka
+>>c)każda prawostronnie wyprowadzalna forma zdaniowa ma jedną osnowę
+d)algorytm konstrukcji parsera LR1 nie stworzy tablicy jeśli znajdzie stan, w którym dla danego symbolu wejściowego nie ma przejścia
+
+[#2] Które z nastepujących są dozwolone w LR:
+>>a)dwie produkcje mają identyczne prawe strony
+>>b)zbiory FIRST dla dwóch nieterminali mają wspólny symbol
+>>c)gramatyka jest zarówna prawostronnie jak i lewostronnie rekursywna
+d)gramatyka jest niejednoznaczna
+
+[#3] Problem dostępnych wyrażeń
+>>a)jest analizą przepływu all-path
+b)jest analizą przepływu any-pat
+>>c)w przód
+d)w tył
+>>e)można kodować na wektorach bitowych
+
+[#4] Generator lex/flex
+a)na wejściu ...
+>>b)na wejściu zbiór wyrażenie regularnych = specyfikacja leksykalna ???
+c)na wyjściu ciąg tokenów
+>>d)na wyjściu deterministyczny automat skończony
+e)na wyjściu parser ...
+>>f)jest generatorem analizatorów leksykalnych
+>>g)produkuje kod skanera w języku C lub C
+
+[#5] Prawdziwe zdania:
+a)robienie parsera ma sens tylko dla gramatyk jednoznacznych
+b)każda gramatyka jednoznaczna ma parser LR1
+>>c)gramatyka atrybutywna dobrze określona jest zupełna
+d)gramatyka zupełna dobrze określona jest gram. atrybutywną
+
+[#6] Zaznaczyć prawdziwe zdania - yacc/bison:
+a)na wejście pobiera program napisany w C
+b)na wejście pobiera zbiór wyrażeń regularnych
+c)na wejście pobiera zbiór leksemów w C
+>>d)na wejście pobiera gramatykę bezkontekstową
+e)na wejście pobiera automat ze stosem
+f)na wyjście generuje ciąg tokenów
+g)na wyjście generuje deterministyczny automat ze stosem
+>>h)na wyjście generuje parser deterministyczny
+i)na wyjście generuje analizator semantyczny
+j)na wyjście generuje gramatykę bezkontekstową
+
+[#7] Informacja o osiagalnych instrukcjach kopiowania jest używana do:
+a)tworzenia UD-łańcuchów
+b)tworzenia DU-łańcuchów
+c)usuwania wspólnych wyrażeń
+>>d)usuwania instrukcji kopiowania
+e)wykrywania i usuwania obliczeń niezmienniczych z pętli
+f)wykrywania zmiennych indukowanych, redukcji mocy, eliminacji zmiennych indukowanych
+
+[#8] Po co badamy osiągalność definicji
+a)przy tworzeniu DU
+>>b)przy tworzeniu UD
+c)przy eliminacji wspólnych podwyrażeń
+d)przy eliminacji kopiowania
+>>e)wykrywania zmiennych indukowanych, redukcji mocy, eliminacji zmiennych indukowanych
+
+[#9] Informacja o dostepnosci wyrażeń jest używana przy:
+a)tworzeniu UD
+b)tworzeniu DU
+>>c)usuwaniu wspólnych wyrażeń
+d)usuwaniu instrukcji kopiowania
+e)wyrzucaniu obliczeń niezmienniczych z pętli
+f)wyrzucaniu zmiennych indukowanych, redukcji mocy, eliminacji zmiennych... [tutaj mam niewyraźnie końcówkę odpowiedzi zapisaną]
+
+[#10] Informacja o żywych zmiennych jest używana:
+>>a)aby wyeliminować instrukcje w czasie transformacji grafu DAG
+b)do stworzenia grafu przepływu
+>>c)do ustalenia, kiedy rejestry mogą być powtórnie użyte przy generacji kodu docelowego
+d)do optymalizacji "przez szparkę" (ang. peephole)
+>>e)do eliminacji zmiennych indukowanych w pętlach grafu przepływu
+
+[#11] Problem dostępności instrukcji kopiowania
+>>a)jest problemem przepływu danych all-path oraz do przodu
+b)jest problemem przepływu danych any-path oraz do przodu
+c)jest problemem przepływu danych all-path oraz wstecz
+d)jest problemem przepływu danych any-path oraz wstecz
+>>e)algorytm eliminacji wspólnych wyrażeń wprowadza instrukcje kopiowania do transformowanego kodu
+>>f)algorytm redukcji mocy zastosowany do zmienych indukowanych wprowadza instrukcje kopiowania do transformowanego kodu
+
+
+[#12] Problem definicji osiągających to
+a)problem typu "all-path" z propagacją "wstecz"
+b)problem typu "all-path" z propagacją "do przodu"
+c)problem typu "any-path" z propagacją "wstecz"
+>>d)problem typu "any-path" z propagacją "do przodu"
+>>e)problem w którym dla każdego bloku definicje osiągające można zapisać w postaci wektora binarnego
+f)taki, że aby definicja było osiągalna w punkcie p, to musi być osiągalna we wszystkich poprzednich węzłach
+
+[#13] Problem zmiennych żywych:
+a)all-path i do przodu
+b)all-path i wstecz
+c)any-path i do przodu
+>>d)any-path i wstecz
+>>e)zbiory zmiennych żywych mogą być reprezentowane przez wektory bitowe
+f) zmienna jest żywa w p, jeśli jest zdefiniowana we wszystkich ścieżkach zaczynających się w p
+>>g) zmienna jest żywa w p, jeśli jest zdefiniowana na jakiejś ścieżce zaczynającej się w p
+
+
+[#14] Złożoność dla algorytmu CYK względem słowa o długości n jest
+a)czasowa O(n), pamięciowa O(n)
+b)czasowa O(n), pamięciowa O(n^2)
+c)czasowa O(n^2), pamięciowa O(n)
+d)czasowa O(n^2), pamięciowa O(n^2)
+e)czasowa O(n^2), pamięciowa O(n^3)
+>>f)czasowa O(n^3), pamięciowa O(n^2)
+g)czasowa O(n^3), pamięciowa O(n^3)
+h)wykładnicza czasowa i wykładnicza pamięciowa
+i)żadne z powyższych
+
+[#15] Pytanie o bisona. Odpowiedzi w stylu:
+a)stosuje algorytm Thompsona
+>>b)generuje parser którego akcje odpowiadają prawostronnemu wyprowadzeniu
+>>c)generuje parser LALR
+>>d)pobiera gramatykę jako wejście
+e)pobiera wyrażenie regularne jako wejście
+f)pobiera AST jako wejście
+
+[#16] Eliminując niejednoznaczność gramatyki poprzez konwersję do innej zachowujemy:
+a)Drzewo wyprowadzeń dla każdego słowa wejściowego oryginalnej gramatyki
+b)Drzewo wyprowadzeń dla każdego jednoznacznego słowa, oryginalnej gramatyki
+c)Wyprowadzenie oryginalnej gramatyki dla każdego jednoznacznego słowa
+d)Wyprowadzenie oryginalnej gramatyki dla każdego słowa wejściowego
+>>e)Zbiór słów generowanych przez oryginalną gramatykę
+
+[#17] Które z poniższych twierdzeń są prawdziwe dla LL(1):
+a)Nie może być rekurencyjna,
+>>b)Nie może być niejednoznaczna - bo na pewno będą konflikty w tablicy parsera
+c)Nie może nie być (musi być) prawidłowa,
+>>d)Jeśli wszystkie produkcje dla każdego z nieterminali zaczynają się od różnych terminali i gramatyka nie ma epsilon-produkcji, to gramatyka jest LL(1)
+e)Nie zawiera symboli bezużytecznych
+
+[#18] Zaznaczyć prawdziwe stwierdzenia dotyczące gramatyk LL(1).
+a)LL(1) nie może nie być prawidłową gramatyką
+>>b)gramatyka z lewostronną rekursją nie może być LL(1)
+>>c)jeśli wszystkie produkcje dla każdego z nieterminali zaczynają się od różnych terminali i gramatyka nie ma epsilon-produkcji, to gramatyka jest LL(1)
+>>d)LL(1) nie może być niejednoznaczna
+e)LL(1) nie może zawierać epsilon-produkcji
+
+[#19] Co generuje i co pobiera flex/lex
+a)na wyjściu parser
+b)na wyjściu analizator semantyczny
+c)na wejściu program w C
+>>d)na wyjściu automat deterministyczny
+e)na wejściu specyfikacja leksykalna w języku C
+>>f)na wejściu wyrażenie regularne
+
+[#20] Które z poniższych twierdzeń są prawdziwe dla LL(1):
+a)Nie może być rekurencyjna,
+>>b)Każda gramatyka z lewostronną rekursją nie jest gramatyką LL(1)
+>>c)Nie może być niejednoznaczna
+d)Nie może nie być (musi być) prawidłowa,
+>>e)Jeśli wszystkie produkcje dla każdego z nieterminali zaczynają się od rożnych terminali i gramatyka nie ma epsilon-produkcji, to gramatyka jest LL(1)
+f)Nie zawiera symboli bezużytecznych.
+
+[#21] Dla parsera wstępującego (bottom-up) prawdziwe jest:
+a)wyprowadzanie lewostronne
+>>b)wyprowadzanie prawostronne
+>>c)parser jest sterowany tablicą
+d)parser jest rekurencyjnie zstępujący
+e)parser nazywany parserem przewidującym (prediction parser)
+>>f)może być parserem LALR(1)
+g)może być parserem LL(1)
+h)realizuje algorytm Thompsona
+i)generowany przez inny program
+j)pobiera gramatykę na wejściu
+
+[#22] Zaznacz stwierdzenia nieprawdziwe:
+a)zastosowanie skanera, na którego możemy zrzucić na przykład usuwanie komentarzy lub pustego kodu, przyspiesza pracę parsera, który wykonywałby te akcje mniej efektywnie
+d)skaner może pracować na określonym typie platformy i ciągów do rozpoznania do których jest przystosowany, a parser na innej platformie
+e)podciąg symboli wejściowych nazywamy leksemem jest dopasowywany do wzorca (tokenu)
+>>f)pojęcie wzorca powiązane jest ze zbiorem reguł, czyli leksemów, które tworzą gramatykę bezkontekstową...
+
+[#23] Zaznacz stwierdzenia nieprawdziwe:
+>>a)brak komentarzy w kodzie jest błędem syntaktycznym
+b)niedomknięcie otwartego nawiasu jest błędem syntaktycznym
+c)redefinicja zmiennej dla innego typu w danym zakresie jest błędem semantycznym
+d)zabroniony skok do wnętrza pętli jest błędem semantycznym
+
+[#24] Które z poniższych stwierdzeń są nieprawdziwe?
+a)Projektant skanera wykorzystuje głównie mechanizmy teoretyczne= związane z automatami skończonymi oraz gramatykami i wyrażeniami regularnymi.
+c)Dwoma zasadniczymi metodami parsingu są metoda top-down polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtworzenie wywodu lewostronnego poczynając od korzenia dr
+b)Parser dokonuje rozbioru wejściowego ciągu tokenów w oparciu o gramatykę bezkontekstową opisującą składnię języka źródłowego, budując drzewo rozbioru syntaktycznego.zewa (symbolu początkowego gramatyki) oraz metoda bottom-up polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtworzenie wyprowadzania prawostronnego poczynając od liści drzewa (analizowanego ciągu tokenów).
+>>d)podstawowymi zadaniami analizy składniowej jest min sprawdzanie zgodności typów składników poszczególnych konstrukcji językowych, sprawdzanie unikalności etykiet i innych elementów języka, kontrola poprawności przekazywania sterowania w programie itd.
+e)generowanie kodu ostatecznego (docelowego) jest silnie zależne od platformy systemowo-sprzętowej, na której ma działać program będący wynikiem tłumaczenia
+
+[#25] Które z poniższych stwierdzeń są nieprawdziwe?
+>>a)Przykładem błędu leksykalnego jest niewykorzystanie ani jednego komentarza w tekście źródłowym programu.
+b)błędem syntaktycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego
+c)błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora
+d)niedozwolony skok do wnętrza ciała pętli programowej należy do grupy błędów semantycznych
+>>e)użycie tego samego identyfikatora kategorii w dwóch róznych definicjach typu wyliczeniowego to przykład błędu syntaktycznego
+
+[#26] Które z poniższych stwierdzeń są nieprawdziwe?
+a)każda gramatyka SLR(1) jest równocześnie gramatyką LR(1)
+>>b)klasa gramatyk które można analizować używając metody LR, jest właściwym podzbiorem klasy gramatyk, które można analizować używając metody LL.
+c)parser LL może wykrywać błędy tak wcześnie jak to jest możliwe podczas przeglądania wejścia od lewej do prawej strony
+d)metoda LALR(1) pozwala na skonstruowanie dla danej gramatyki tablicy parsera o rozmiarach nie większych, niż ma to miejsce w przypadku metody LR(1) dla tej samej gramatyki
+e)jeżeli dana gramatyka jest zarówno gramatyką SLR(1) jak i LALR(1) to tablice parsera konstruowane obiema metodami mają identyczne rozmiary
+
+[#27] Mamy kawałek kodu w C:
+	int A[2];
+	int k;
+	foo(int x, int y, int z)
+	{
+		z= 0;
+		y=1 ;
+		A[k] = 7 ;
+		x++;
+	}
+	main()
+	{
+		A[0] = 2;
+		A[1] = 4;
+		k=1;
+		foo(A[1],A[k],k);
+		cout<<A[0]<<A[1] <<k;
+	}
+Co zostanie wyświetlone, jeśli parametry są przekazywane przez wartość:
+>>a)271
+b)720
+c)210
+d)250
+e)750
+
+[#28] Mamy kawałek kodu w C:
+	int A[2];
+	int k;
+	foo(int x, int y, int z)
+	{
+		z= 0;
+		y=1 ;
+		A[k] = 7 ;
+		x++;
+	}
+	main()
+	{
+		A[0] = 2;
+		A[1] = 4;
+		k=1;
+		foo(A[1],A[k],k);
+		cout<<A[0]<<A[1] <<k;
+	}
+Co zostanie wyświetlone jeśli parametry są przekazywane przez referencje:
+a)271
+>>b)720
+c)210
+d)250
+e)750
+
+[#29] Mamy kawałek kodu w C:
+	int A[2];
+	int k;
+	foo(int x, int y, int z)
+	{
+		z= 0;
+		y=1 ;
+		A[k] = 7 ;
+		x++;
+	}
+	main()
+	{
+		A[0] = 2;
+		A[1] = 4;
+		k=1;
+		foo(A[1],A[k],k);
+		cout<<A[0]<<A[1] <<k;
+	}
+Co zostanie wyświetlone jeśli parametry są przekazywane przez nazwę:
+a)271
+b)720
+c)210
+d)250
+>>e)750
+
+[#30] Mamy kawałek kodu w C:
+	int A[2];
+	int k;
+	foo(int x, int y, int z)
+	{
+		z= 0;
+		y=1 ;
+		A[k] = 7 ;
+		x++;
+	}
+	main()
+	{
+		A[0] = 2;
+		A[1] = 4;
+		k=1;
+		foo(A[1],A[k],k);
+		cout<<A[0]<<A[1] <<k;
+	}
+Co zostanie wyświetlone jeśli parametry są przekazywane przez copy/restore:
+a)271
+b)720
+>>c)210
+>>d)250
+e)750
+
+[#31] Mamy wyrażenie regularne `([A-Z] [a-z]+)*`. Które z poniższych słów zostało przez nie wygenerowane:
+Odpowiedzi:
+a)xyz
+b)XyZ
+c)XYz
+d)xYz
+>>e)żadne
+
+[#32] Mamy dwie gramatyki G1 i G2:
+	G1: S -> for id = E to E do S | repeat S until E | id = E
+	E -> E + V | V
+	V -> id|(E)|id(E)|-V
+	G2: S -> for id = E to E do S | repeat S until E | id = E
+	E -> E + V | V
+	V -> id|(E)|id(E)|-E
+Po przekształceniach:
+>>a)Gramatyka G1 będzie LL(1), a gramatyka G2 nie
+b)Gramatyka G2 będzie LL(1), a gramatyka G1 nie
+c)Gramatyka G1 będzie LL(1), a gramatyka G2 też
+d)Gramatyka G1 nie będzie LL(1) a gramatyka G2 też nie
+e)żadne z powyższych
+
+[#33] Jakaś specyfikacja dla skanera:
+	aa* {return TOKEN1}
+	c(a|b)* {return TOKEN2}
+	ab*c {return TOKEN3}
+	caa* {return TOKEN4}
+	b*aa*(c|?) {return TOKEN5}
+I mając słowo:
+`abcabcaabbaacccabaccbb` skaner odczyta je jako:
+a)abc abc aa bbaac c caba c cbb
+>>b)33152222
+e)A,B,C + każde słowo nad alfabetem T={a,b,c} może zostać podzielone na tokeny
+>>f)Specyfikacja jest redundantna
+
+[#34] Podana jakaś gramatyka: (SLR(1)):
+	E' -> E
+	E -> (E)
+	E -> a(E)
+	E -> a
+I prefiksami aktywnymi są:
+>>a)E
+b)EE
+>>c)((
+>>d)(a
+>>e)a((
+f)a)
+g)()
+
+[#35] Dana jest gramatyka G
+	S'-> S
+	S -> -S
+	S -> L
+	L -> a(S)
+	L -> a
+oraz podana jest tablica parsera SLR(1) (wyobraź ją sobie :P) do tej gramatyki. Wskazać aktywne prefiksy:
+>>a)S
+>>b)-S
+c)-Sa
+d)a((
+>>e)a(a
+>>f)a(L
+>>g)a(S
+
+[#36] Mamy specyfikację dla skanera:
+	aa* RETURN TOKEN 1
+	b(a|c)* RETURN TOKEN 2
+	ac*b RETURN TOKEN 3
+	c*aa*(b|epsilon) RETURN TOKEN 4
+	baa* RETURN TOKEN 5
+Przepuszczamy słowo `abcabcaabbaacccabaccbb` (nie spisałem całych tokenów, tylko kolejność):
+a)Wyjdzie 34422222
+b)Wyjdzie 34454432
+>>c)Wyjdzie 3442222
+d)Każde słowo nad alfabetem {a, b, c} może zostać wg. powyższej specyfikacji podzielone na tokeny.
+>>e)Specyfikacja skanera jest redundantna.
+
+[#37] Mamy gramatyki G1, G2 i G3:
+	G1: S -> for id = E to E do S | repeat S until E | id = E
+	E -> E + V | V
+	V -> id|(E)|id(E)|-V
+	G2: S -> for id = E to E do S | repeat S until E | id = E
+	E -> E + V | V
+	V -> id|(E)|id(E)|-E
+	G3: S -> U | M
+	M -> if E then M else M | id = E
+	U -> if E then M else U | if E then S
+	E -> E + V | V
+	V -> id | (E) | id(E) | -V
+Po przekształceniach która gramatyka będzie LL(1):
+a)G2
+b)G2 i G3
+c)G1, G2, G3
+>>d)Jakaś kolejna kombinacja.
+
+[#38] Oto dana była gramatyka:
+	E' -> E
+	E -> E-V
+	E -> V
+	V -> a(E)
+	V -> a
+Do niej tablica parsera SLR(1). Prefiksami aktywnymi są:
+>>a)E
+b)EE
+>>c)a(
+>>d)a(E
+>>e)a(a
+f)-Va
+g)-a
+
+[#39] Wskaż zdania nieprawdziwe:
+a)Powodem rozdzielenia analizy leksykalnej od syntaktycznej jest prostota projektowania parsera, ponieważ parser pomijający białe znaki i komentarze byłby o wiele bardziej skomplikowany.
+b)Powodem rozdzielenia analizy leksykalnej od syntaktycznej jest wydajność (bardziej wyspecjalizowany moduł do analizy jest szybszy).
+c)Powodem rozdzielenia analizy leksykalnej od syntaktycznej jest zwiększenie przenośności kompilatora, ponieważ białe znaki mogą być różnie kodowane na różnych architekturach sprzętowych (np. nowa linia na windows i linux).
+d)Leksem to podłańcuch symboli pasujący do wzorca skojarzonego z tokenem.
+>>e)Wzorzec to reguła związana z leksemem określająca budowę tokenu.
+g)Leksem jest to podciąg analizowanego słowa, spełniający wzorzec regularny - token
+
+[#40] Wskaż zdania, które nie są prawdziwe:
+a)Przykładem błędu leksykalnego jest napotkanie niedozwolonego symbolu w identyfikatorze.
+>>b)Przykładem błędu leksykalnego jest opuszczenie nawiasu domykającego wyrażenie.
+>>c)Przykładem błędu leksykalnego jest użycie niezadeklarowanego identyfikatora.
+>>d)Przykładem błędu leksykalnego jest niedozwolony skok do wnętrza pętli.
+>>e)Przykładem błędu leksykalnego jest użycie takiego samego identyfikatora w różnych typach wyliczeniowych.
+
+[#41] Które z poniższych stwierdzeń dotyczących parserów są nieprawdziwe?
+a)Parser jest rodzajem deterministycznego automatu ze stosem
+b)Zadaniem analizatora syntaktycznego jest sprawdzanie poprawności składniowej i tworzenie drzewa rozbioru dla analizowanego ciągu tokenów
+c)Celem projektowania parsera jest zbudowanie deterministycznego automatu ze stosem w oparciu o daną gramatykę bezkontekstową
+>>d)Istnieją gramatyki bezkontekstowe, w oparciu o które nie można zbudować parsera top-down przy równoczesnej możliwości zbudowania w oparciu o nie parsera bottom-up
+>>e)W oparciu o gramatykę z lewostronną rekursją nie można zbudować parsera typu bottom-up.
+
+[#42] Które z poniższych stwierdzeń są nieprawdziwe?
+a)Projektant skanera wykorzystuje głównie mechanizmy teoretyczne związane z automatami skończonymi oraz gramatykami i wyrażeniami regularnymi
+b)Parser dokonuje rozbioru wejściowego ciągu tokenów w oparciu o gramatykę bezkontekstową opisującą składnię języka źródłowego, budując drzewo rozbioru syntaktycznego
+>>c)Dwoma zasadniczymi metodami parsingu są: metoda bottom-up polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtwarzanie wyprowadzenia lewostronnego poczynając od korzenia drzewa (symbolu początkowego gramatyki) oraz metoda top-down polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtwarzanie wyprowadzenia prawostronnego poczynając od liści drzewa (analizowanego ciągu tokenów)
+d)Podstawowymi zadaniami analizy semantycznej jest m. in. sprawdzanie zgodności typów składników poszczególnych konstrukcji językowych, sprawdzanie unikalności etykiet i innych elementów języka, kontrola poprawności przekazywania sterowania w programie itd.
+>>e)Analiza syntaktyczna bazuje na metodach opartych o gramatyki atrybutywne i definicje kierowane składnią
+
+[#43] Które z poniższych stwierdzeń są nieprawdziwe?
+>>a)Przykładem błędu syntaktycznego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze
+b)Błędem syntaktycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego
+c)Błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora
+d)Niedozwolony skok do wnętrza ciała pętli programowej należy do grupy błędów semantycznych
+>>e)Wykorzystanie "pętli nieskończonej" to przykład błędu semantycznego w programie komputerowym
+
+[#44] Które z poniższych stwierdzeń są nieprawdziwe?
+a)Każda gramatyka SLR(1) jest równocześnie gramatyką LR(1)
+b)Klasa gramatyk, które można analizować używając metody LR, jest właściwym nadzbiorem klasy gramatyk, które można analizować używając metody LL
+c)Parser LR może wykrywać błędy tak wcześnie, jak to jest możliwe podczas przeglądania wejścia od lewej do prawej strony
+>>d)Metoda LALR(1) pozwala na zbudowanie dla danej gramatyki tablic parsera o rozmiarach nie mniejszych, niż ma to miejsce w przypadku metody LR(1) dla tej samej gramatyki
+e)Jeżeli dana gramatyka jest zarówno gramatyką typu SLR(1) jak i LALR(1), to tablice parsera konstruowane obydwiema metodami mają identyczne rozmiary
+
+[#45] Które z poniższych stwierdzeń są nieprawdziwe?
+>>a)Jednym z powodów rozdzielenia analizy leksykalnej od syntaktycznej jest uproszczenie procesu optymalizacji kodu pośredniego wykonywanej metodą analizy przepływu
+b)Kolejnym z powodów rozdzielenia analizy leksykalnej od syntaktycznej jest wydajność kompilatora. Oddzielny analizator leksykalny umożliwia utworzenie bardziej wyspecjalizowanego i przez to bardziej wydajnego modułu analizy
+c)Dalszym powodem rozdzielenia analizy leksykalnej od syntaktycznej jest zwiększenie przenośności kompilatora. Osobliwości kodowania znaków wejściowych i inne anomalie zależne od urządzeń mogą być ograniczone do analizatora leksykalnego
+d)Leksemem nazywamy podłańcuch symboli wejściowych pasujący do wzorca symbolu fG1
+leksykalnego (tokenu)
+>>e)Wzorzec jest to reguła związana z pewnym symbolem leksykalnym (tokenem) określająca budowę leksemów odpowiadających temu tokenówi. Najczęściej używaną specyfikacją wzorców są wyrażenia regularne.
+
+[#46] Głównym zadaniem parsera jest
+a)Optymalizacja tzw. kodu pośredniego
+>>b)Wykonywanie analizy syntaktycznej - sprawdzanie poprawności składniowej i stworzenie drzewa rozbioru dla analizowanego ciągu tokenów
+c)Wykonywanie analizy semantycznej - np. sprawdzanie zgosności typów składników poszczególnych konstrukcji językowych, sprawdzanie unikalności etykiet i innych elementów języka, kontrola poprawności przekazywania sterowania w programie itd.
+d)Generacja kodu docelowego i optymalizacja przedziału zasobów, głównie związanych z procesorem i pamięcią zewnętrzną
+e)Wykonywanie analizy leksykalnej - sprawdzanie poprawności
+
+[#47] Które z poniższych stwierdzeń są nieprawdziwe?
+a)Projektant skanera wykorzystuje głównie mechanizmy teoretyczne związane z automatami skończonymi oraz gramatykami i wyrażeniami regularnymi.
+b)Parser dokonuje rozbioru wejściowego ciągu tokenów w oparciu o gramatykę bezkontekstową opisującą składnię języka źródłowego, budując drzewo rozbioru syntaktycznego.
+c)Dwoma zasadniczymi metodami parsingu są: metoda top-down polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtwarzanie wyprowadzenia lewostronnego poczynając od korzenia drzewa (symbolu początkowego gramatyki)oraz metoda bottom-up polegająca na budowaniu drzewa rozbioru  syntaktycznego poprzez odtwarzanie wyprowadzenia prawostronnego poczynając od liści drzewa (analizowanego ciągu tokenów).
+>>d)Podstawowymi zadaniami analizy syntaktycznej jest m. in. sprawdzanie zgodności typów składników poszczególnych konstrukcji językowych, sprawdzanie unikalności etykiet i innych elementów języka, kontrola poprawności przekazywania sterowania w programie itd.
+>>e)Generowanie kodu ostatecznego (docelowego) jest niezależne od platformy systemowo-sprzętowej, na której ma działać program będący wynikiem tłumaczenia.
+
+[#48] Które z poniższych twierdzeń są nieprawdziwe?
+a)Przykładem błędu leksykalnego w programie komputerowym jest użycie niedozwolonego znaku w identyfikatorze.
+b)Błędem syntaktycznym w programie komputerowym jest opuszczenie nawiasu zamykającego, jeśli wcześniej użyto nawiasu otwierającego.
+c)Błędem semantycznym w programie komputerowym jest użycie w wyrażeniu niezadeklarowanego wcześniej identyfikatora.
+>>d)Niedozwolony skok do wnętrza ciała pętli programowej należy do grupy błędów syntaktycznych.
+e)Użycie tego samego identyfikatora kategorii w dwóch różnych definicjach typu wyliczeniowego to przykład błędu semantycznego.
+
+[#49] Które z poniższych stwierdzeń są nieprawdziwe?
+>>a)Każda gramatyka LR(1) jest równocześnie gramatyką SLR(1).
+b)Klasa gramatyki, które można analizować używając metody LR, jest właściwym nadzbiorem [gramatyk LL].
+c)Metoda LALR(1) pozwala na zbudowanie dla danej gramatyki tablic parsera o rozmiarach nie większych, niż ma to miejsce w przypadku metody LR(1) dla tej samej gramatyki.
+d)Jeżeli dana gramatyka jest zarówno gramatyką typu SLR(1) jak i LALR(1), to tablice parsera konstruowane obu metodami mają identyczne rozmiary.
+
+[#50] Które z poniższych stwierdzeń są nieprawdziwe?
+a)Jednym z powodów rozdzielenia analizy leksykalnej od syntaktycznej jest prostota projektowania. Przykładowo: parser zawierający reguły dotyczące komentarzy i białych znaków jest znacznie bardziej skomplikowany, niż gdyby komentarze i białe znaki były usuwane w analizatorze leksykalnym.
+b)Kolejnym z powodów rozdzielenia analizy leksykalnej od syntaktycznej jest wydajność kompilatora. Oddzielny analizator leksykalny umożliwia utworzenie bardziej wyspecjalizowanego i przez to bardziej wydajnego modułu analizy.
+c)Dalszym powodem rozdzielenia analizy leksykalnej od syntaktycznej jest zwiększenie przenośności kompilatora. Osobliwości kodowania znaków wejściowych i inne anomalie zależne od urządzeń mogą być ograniczone do analizatora leksykalnego.
+d)Tokenem nazywamy podłańcuch symboli wejściowych pasujący do wzorca symbolu leksykalnego.
+>>e)Wzorzec jest to reguła związana z symbolem leksykalnym (tokenem) określająca budowę leksemów odpowiadających temu tokenówi. Najczęściej używaną specyfikacją wzorców są wyrażenia regularne.
+
+[#51] Głównym zadaniem skanera jest:
+a)Optymalizacja tzw. kodu posredniego.
+b)Wykonywanie analizy semantycznej, np. sprawdzanie zgodności typów składników poszczególnych konstrukcji językowych, sprawdzanie unikalności etykiet i innych elementów języka, kontrola poprawności przekazywania sterowania w programie. itd.
+c)Wykonywanie analizy syntaktycznej, sprawdzanie poprawności składniowej i tworzenie drzewa rozbioru dla analizowanego ciągu tokenów.
+d)Generacja kodu docelowego i optymalizacja przedziału zasobów, głównie związanych z procesorem i pamięcią wewnętrzną.
+>>e)Wykonywanie analizy leksykalnej, sprawdzanie poprawności elementarnych składników tłumaczonego tekstu i przekształcanie ich na tokeny.
+
+[#52] Wybierz zdania prawdziwe
+>>a)gramatyka LL wykrywa błąd tak szybko jak to możliwe analizując od lewej do prawej strony
+>>b)gramatyki LR(k) są właściwym nadzbiorem gramatyk LL(k)
+
+[#53] Wybierz zdania nieprawdziwe
+a)gramatyka LALR posiada tablice parsera nie większą niż tablica parsera LR
+>>b)gramatyka jest postaci LALR(1) i jednocześnie SLR(1), tablica parsera LALR będzie zawsze większa od tablicy SLR
+>>c)istnieją gramatyki/języki dla których można stworzyć parser LL, a nie można stworzyć parsera LR
+
+[#54] Wybierz zdania nieprawdziwe
+a)przypisanie pod nie zdefiniowaną wcześniej zmienną jest błędem semantycznym
+b)wykorzystanie tego samego identyfikatora dla nazwania kategorii w definicji typu wyliczeniowego jest błędem semantycznym
+>>c)nie napisanie nawiasu zamykającego po wcześniejszym jego otwarciu jest błędem leksykalnym
+
+[#55] Wybierz zdania prawdziwe. - 3 powody dlaczego rozdzielony jest parser od leksera (w stylu):
+>>a)obsługa komentarzy i białych znaków powodowałaby wzrost komplikacji parsera, dlatego warto usuwać je w osobnym lekserze
+>>b)rozdzielenie parsera i leksera pozwala napisać bardziej wyspecjalizowany parser co powoduje wzrost jego wydajności
+>>c)w celu przenośności kompilatora/leksera np. niestandardowe kodowanie znaków obsługiwane w osobnym module leksera
+
+[#56] Które z poniższych stwierdzeń są nieprawdziwe?
+>>a)Projektant parsera wykorzystuje głównie mechanizmy teoretyczne związane z automatami skończonymi oraz gramatykami i wyrażeniami regularnymi
+b)Parser dokonuje rozbioru wejściowego ciągu tokenów w oparciu o gramatykę bezkontekstową opisującą składnię języka źródłowego, budując drzewo rozbioru syntaktycznego
+c)Dwoma zasadniczymi metodami parsingu są: metoda top-down polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtwarzanie wyprowadzenia lewostronnego poczynając od korzenia drzewa (symbolu początkowego gramatyki) oraz metoda bottom-up polegająca na budowaniu drzewa rozbioru syntaktycznego poprzez odtwarzanie wyprowadzenia prawostronnego poczynając od liści drzewa (analizowanego ciągu tokenów)
+>>d)Podstawowymi zadaniami analizy syntaktycznej jest m. in. sprawdzanie zgodności typów składników poszczególnych konstrukcji językowych, sprawdzanie unikalności etykiet i innych elementów języka, kontrola poprawności przekazywania sterowania w programie itd.
+e)Analiza semantyczna bazuje na metodach opartych o gramatyki atrybutywne i definicje kierowane składnią
+
+[#57] Które z poniższych stwierdzeń są nieprawdziwe?
+a)Każda gramatyka SLR(1) jest równocześnie gramatyką LR(1)
+b)Klasa gramatyk, które można analizować używając metody LR, jest właściwym nadzbiorem klasy gramatyk, które można analizować używając metody LL
+c)Parser LL może wykrywać błędy tak wcześnie, jak to jest możliwe podczas przeglądania wejścia od lewej do prawej strony
+d)Metoda LALR(1) pozwala na zbudowanie dla danej gramatyki tablic parsera o rozmiarach nie większych, niż ma to miejsce w przypadku metody LR(1) dla tej samej gramatyki
+>>e)Jeżeli dana gramatyka jest zarówno gramatyką typu SLR(1) jak i LALR(1), to tablica parsera konstruowanego metodą LALR(1) dla tej gramatyki ma rozmiar większy, niż tablica budowana metodą SLR(1) dla tej gramatyki.
+
+[#58] Które z poniższych stwierdzeń dotyczących gramatyk atrybutywnych są prawdziwe?
+>>a)Gramatyka atrybutywna to system bazujący na gramatyce bezkontekstowej, w którym symbolom gramatyki przypisuje się atrybuty, a produkcjom reguły wyliczania tych atrybutów.
+b)Gramatyki atrybutywne wykorzystywane są do przeprowadzania analizy leksykalnej.
+c)Jeśli wszystkie atrybuty w gramatyce atrybutywnej zawsze posiadają reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony tych produkcji, to potrafimy wyliczyć wartości tych atrybutów równocześnie z parsingiem typu top-down wykorzystując mechanizm drugiego stosu, obsługiwanego synchronicznie z zasadniczym stosem parsera
+>>d)Jeśli w gramatyce atrybutywnej istnieją nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony tych produkcji, ale też atrybuty posiadające reguły przypisane do tych samych produkcji, w których "właściciele atrybutów" pojawiają się po prawych stronach produkcji, to pod pewnymi warunkami dotyczącymi reguł obliczania tych ostatnich atrybutów można wyliczyć wartości wszystkich atrybutów równocześnie z parsingiem bottom-up, ale kosztem pewnej modyfikacji bazowej gramatyki bezkontekstowej (wprowadzenie produkcji pustych) 
+>>e)Jeśli w gramatyce atrybutywnej istnieję nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony tych produkcji, ale także atrybuty posiadające reguły przypisane do tych samych produkcji, gdzie "właściciele atrybutów" pojawiają się w prawych stronach produkcji, to może zajść konieczność dwufazowej obsługi takich atrybutów: w pierwszej fazie parser buduje drzewo rozbioru, a w drugiej jest ono "dekorowane" wartościami atrybutów podczas często wielokrotnego przeglądania jego wierzchołków.
+
+[#59] Które z poniższych stwierdzeń są prawdziwe?
+>>A) Istnieją gramatyki, dla których rozmiar tablicy parsera LR jest większy niż rozmiar tablicy parsera LALR.
+>>B) Istnieją gramatyki, dla których rozmiar tablicy parsera SLR jest identyczny jak rozmiar tablicy parsera LALR.
+C) Jeśli budujemy parser bottom-up dla gramatyki niejednoznacznej usuwając konflikty, to tablica takiego parsera ma rozmiar nie większy od rozmiaru tablicy parsera bottom-up dla gramatyki jednoznacznej (dla tego samego języka) stanowiącej przekształcenie gramatyki niejednoznacznej.
+>>D) Budujemy parser bottom-up (typu LR) dla gramatyki niejednoznacznej usuwając konflikty. Możliwe konflikty w takich parserach to konflikty typu: shift-reduce, reduce-reduce.
+E) Usuwanie konfliktów w parserach bottom-up (typu LR) w celu zbudowania deterministycznego parsera dla gramatyki niejednoznacznej nie jest praktykowane, gdyż na ogół nie jesteśmy w stanie uwzględnić dodatkowych wymagań stawianych drzewom rozbioru będącym wynikiem parsingu przez definicję języka programowania.
+
+[#60] Które z poniższych stwierdzeń dotyczących gramatyk atrybutywnych są prawdziwe?
+>>a) Gramatyka atrybutywna to system bazujący na gramatyce bezkontekstowej, w którym symbolom gramatyki przypisuje się atrybuty, a produkcjom reguły wyliczania tych atrybutów
+>>b) Gramatyki atrybutywne wykorzystywane są do przeprowadzenia analizy semantycznej i generacji kodu pośredniego
+c) Jeżeli wszystkie atrybuty w gramatyce atrybutywnej zawsze posiadają reguły przypisane do tych atrybutów, w których "właściciele atrybutów" stanowią lewe strony tych produkcji, to potrafimy wyliczyć wartości tych atrybutów równocześnie z parsingiem bottom-up, za pomocą mechanizmu drugiego stosu, obsługiwanego synchronicznie z głównym stosem parsera
+>>d) Jeśli w gramatyce atrybutywnej istnieją nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony tych produkcji, ale też atrybuty posiadające reguły przypisane do tych samych produkcji, gdzie "właściciele atrybutów" pojawiają się po prawych stronach produkcji, to pod pewnymi warunkami dotyczącymi reguł obliczania tych ostatnich atrybutów (tzw. gramatyka L-atrybutywna) można wyliczyć wartości wszystkich atrybutów równocześnie z parsingiem top-down, ale kosztem koniecznej modyfikacji bazowej gramatyki bezkontekstowej (wprowadzenie produkcji pustych)
+e) Jeśli w gramatyce atrybutywnej istnieję nie tylko atrybuty posiadające reguły przypisane do tych produkcji, w których "właściciele atrybutów" stanowią lewe strony tych produkcji, ale też atrybuty posiadające reguły przypisane do tych samych produkcji, gdzie "właściciele atrybutów" pojawiają się po prawych stronach produkcji, to może zajść konieczność 2-fazowej obsługi takich atrybutów: w pierwszej fazie parser buduje drzewo rozbioru, a w drugiej jest ono "dekorowane" wartościami atrybutów podczas często wielokrotnego przeglądania jego wierzchołków.
+
+[#61] Które zdania są prawdziwe:
+>>a) Przechodzenie drzewa w porządku preorder najpierw odwiedza rodzica n, a potem kolejno potomstwo n1, n2, n3, ..., nk; Przechodzenie drzewa w porządku postorder najpierw odwiedza potomstwo n1, n2, n3, ..., nk, a potem rodzica n.
+>>b) Kolejnością, w jakiej tworzone są wierzchołki drzewa wyprowadzenia w analizie zstępującej (top-down) jest preorder
+c) Kolejnością, w jakiej tworzone są wierzchołki drzewa wyprowadzenia w analizie zstępującej (top-down) jest postorder
+d) Kolejnością, w jakiej tworzone są wierzchołki drzewa wyprowadzenia w analizie wstępującej (bottom-up) jest preorder
+>>e) Kolejnością, w jakiej tworzone są wierzchołki drzewa wyprowadzenia w analizie wstępującej (bottom-up) jest postorder
+f) Żadne z powyższych
+
+[#62]  Dla optymalizacji kodu pośredniego metodą analizy przepływu prawdziwe są następujące stwierdzenia:
+a) Każdy blok podstawowy jest pojedynczą instrukcją kodu trójadresowego, różną od instrukcji skoku, wywołania podprogramu lub powrotu z podprogramu
+>>b) Wierzchołkami grafu obliczeń są bloki podstawowe
+>>c) Każda krawędź w grafie obliczeń jest odzwierciedleniem możliwości przekazania sterowania między wierzchołkami grafu obliczeń, zgodnie z kierunkiem krawędzi
+d) Graf obliczeń jest to acykliczny graf skierowany, tworzony na podstawie trójadresowego kodu pośredniego
+>>e) Główną rolę w tworzeniu struktury grafu obliczeń poprzez przekształcanie strumienia instrukcji trójadresowych, tworzących kod pośredni, pełnią instrukcje skoków, wywołania podprogramu lub powrotu z podprogramu
+
+[#63] Które zdania są prawdziwe?
+>>a) Automat ze stosem realizujący parsing top-down (LL) akceptuje przez pusty stos i nie używa mechanizmu stanów
+>>b) Automat ze stosem realizujący parsing bottom-up (LR) wykorzystuje mechanizm stanów (także do akceptacji wejścia)
+>>c) Przy budowie tablicy parsera top-down (LL(1)) wykorzystywane są zbiory First1 i Follow1, wyznaczone dla symboli nieterminalnych gramatyki
+>>d) Przy budowie tablicy parsera bottom-up (LR) wykorzystywane są zbiory sytuacji dopuszczalnych dla przedrostków żywotnych
+e) automat ze stosem, realizujący parsing bottom-up (LR) nie może być oparty o gramatykę wymagającą lewostronnej faktoryzacji
+f) Przy budowie tablicy parsera SLR(1) nie możemy skorzystać z gramatyki zawierającej puste produkcje (epsilon-produkcje)
+g) Przy budowie tablicy parsera SLR(1) nie możemy skorzystać z gramatyki wymagającej usunięcia lewostronnej rekursji
+
+[#64] Które spośród poniższych transformacji optymalizujących kod pośredni mogą być wykonane metodą optymalizacji przez szparkę?
+>>A) Eliminacja zbędnych skoków.
+B) Eliminacja wspólnych podwyrażeń.
+C) Optymalizacja przebiegu sterowania poprzez zmniejszenie liczby skoków realizowanych w trakcie wykonania programu (wykrywanie i modyfikacja sytuacji typu "skok do skoku").
+D) Eliminacja martwego skoku.
+>>E) Reorganizacja kodu zawierającego skoki poprzez zmianę usytuowania instrukcji skoków, w celu zmniejszenia liczby skoków realizowanych w czasie wykonania programu.
+F) Przemieszczenie kodu niezmienniczego poza ciało pętli.
+>>G) Eliminacja tożsamości algebraicznych.
+
+[#65] Wskaż prawdziwe (polecenie było dłuższe, ale o to chodziło):
+A) Automat ze stosem realizujący parsing bottom-up (LR) akceptuje przez pusty stos i nie używa mechanizmu stanów.
+B) Automat ze stosem realizujący parsing top-down (LL) wykorzystuje mechanizm stanów (także do akceptacji wejścia).
+>>C) Przy budowaniu tablicy parsera top-down (LL(1)) wykorzystywane są zbiory First1 i Follow1 wyznaczane dla symboli nieterminalnych gramatyki.
+>>D) Przy budowaniu tablicy parsera bottom-up (SLR(1)) wykorzystywane są zbiory sytuacji dopuszczalnych dla przedrostków żywotnych.
+E) Przy budowaniu tablicy parsera top-down (LL(1)), a także przy budowaniu tablicy parsera bottom-up (LR(1)) nie możemy skorzystać z gramatyki zawierającej produkcje puste (e-produkcje).
+>>F) Przy budowaniu tablicy parsera SLR(1) wykorzystywane są zbiory Follow1 wyznaczane dla symboli nieterminalnych gramatyki.
+
+[#66] Zaznacz poprawne odpowiedzi:
+>>A) Mechanizm gramatyk atrybutywnych jest wykorzystywany przy projektowaniu analizy semantycznej
+B) Atrybut nazywamy syntezowanym, gdy reguła go definiująca jest przypisana do takiej produkcji gramatyki bezkontekstowej,w której symbol będący "właścicielem" tego atrybutu występuje z prawej strony produkcji
+C) Atrybut może by równocześnie syntezowany i dziedziczony
+D) Zbiór atrybutów dziedziczonych przypisanych do symbolu początkowego gramatyki bezkontekstowej w zupełnej gramatyce musi być pusty
+>>E) W zupełnej gramatyce atrybutywnej jeżeli symbol stojący po lewej stronie produkcji posiada atrybut dziedziczony to do tej produkcji musi być przypisana reguła definiujące ten atrybut
+>>F) Gramatyka S o taka co zawiera tylko i wyłącznie atrybuty syntezowane
+
+[#67] Zaznacz poprawne:
+A) Istnieją gramatyki dla których rozmiar tablicy parsera LR jest mniejszy niż parsera LALR
+>>B) Istnieją takie gramatyki, że rozmiar tablicy parsera SLR jest identyczny z LALR
+C) Jeżeli dla niejednoznacznej gramatyki robimy parser LR to tablica ma wiekszy rozmiar niż dla odpowiednika gramatyki jednoznacznej
+D) Przy bottom-up(LR). Mogą być konflikty typu shift-shift oraz shift-reduce
+E) Usuwanie konfliktów w top-down nie jest praktykowane bo ...
+
+
+<options> {
+    "format": "2.1",
+    "markdown": true,
+    "grading": "custom: incorrect ? 0 : (missed == 0) ? 3 : (missed == 1 && correct) ? 1 : 0",
+    "repeatIncorrect": true,
+    "explain": "always",
+    "explanations": {
+        "21": "Nie ma pewności, czy odpowiedzi d) i e) są poprawne, czy błędne.",
+        "55": "Wykład:\n> Rozdzielenie etapu analizy na dwie odrębne funkcje: analiza leksykalna i analiza syntaktyczna sprawia, że jedna i druga mogą być wykonywane przy użyciu bardziej efektywnych algorytmów, gdyż algorytmy te istotnie się różnią, wykorzystując inne pryncypia formalne i realizacyjne"
+    }
+}
